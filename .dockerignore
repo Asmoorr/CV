@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.gitignore
+openspec
+coverage
+.pnpm-store
+artifacts
+cv.html
+*.log
+.env*
+Dockerfile*
+README.md
