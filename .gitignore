@@ -12,6 +12,8 @@ npm-debug.log*
 
 # Generated audit and browser-test artifacts
 /artifacts/
+/test-results/
+/playwright-report/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
