@@ -3,24 +3,27 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import type { Locale, NavigationContent } from "@/content/schema";
+import { locales, type Locale } from "@/content/locale";
+import type { NavigationContent } from "@/content/schema";
+import styles from "./Header.module.css";
 
 export function Header({ locale, content }: { locale: Locale; content: NavigationContent }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
   const localeHref = (nextLocale: Locale) => {
-    const rest = pathname.replace(/^\/(ru|en)/, "");
-    return `/${nextLocale}${rest}`;
+    const segments = pathname.split("/");
+    segments[1] = nextLocale;
+    return segments.join("/");
   };
 
   return (
-    <header className="site-header">
-      <a className="brand" href="#top">
+    <header className={styles.header}>
+      <a className={styles.brand} href="#top">
         {content.brand.split(".")[0]}<span>.</span>{content.brand.split(".")[1]}
       </a>
       <button
-        className="menu-button"
+        className={styles.menuButton}
         type="button"
         aria-expanded={open}
         aria-controls="primary-navigation"
@@ -30,7 +33,7 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
         <span />
         <span />
       </button>
-      <div className={`header-panel ${open ? "is-open" : ""}`}>
+      <div className={`${styles.panel} ${open ? styles.panelOpen : ""}`}>
         <nav id="primary-navigation" aria-label={content.ariaLabel}>
           <ul>
             {content.items.map((item) => (
@@ -40,8 +43,8 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
             ))}
           </ul>
         </nav>
-        <div className="locale-switch" aria-label={content.languageLabel}>
-          {(["ru", "en"] as Locale[]).map((item) => (
+        <div className={styles.localeSwitch} aria-label={content.languageLabel}>
+          {locales.map((item) => (
             <Link
               key={item}
               href={localeHref(item)}

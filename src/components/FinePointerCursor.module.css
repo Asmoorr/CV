@@ -1,0 +1,8 @@
+.dot, .ring { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  :global(.has-fine-cursor), :global(.has-fine-cursor) a, :global(.has-fine-cursor) button { cursor: none; }
+  .dot, .ring { display: block; position: fixed; left: 0; top: 0; z-index: var(--layer-cursor); pointer-events: none; border-radius: 50%; will-change: transform; }
+  .dot { width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; background: var(--signal); }
+  .ring { width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid rgba(72,199,244,.42); }
+}

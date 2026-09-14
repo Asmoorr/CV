@@ -1,27 +1,29 @@
 import type { HeroContent } from "@/content/schema";
 import { HeroField } from "../HeroField";
+import statusStyles from "../ui/Status.module.css";
+import styles from "./Hero.module.css";
 
 export function Hero({ content }: { content: HeroContent }) {
   return (
-    <section className="hero" id="top" aria-labelledby="hero-name">
+    <section className={styles.hero} id="top" aria-labelledby="hero-name">
       <HeroField />
-      <div className="hero-orbit orbit-one" aria-hidden="true" />
-      <div className="hero-orbit orbit-two" aria-hidden="true" />
-      <div className="hero-content">
-        <p className="hero-greeting">{content.greeting}</p>
+      <div className={`${styles.orbit} ${styles.orbitOne}`} aria-hidden="true" />
+      <div className={`${styles.orbit} ${styles.orbitTwo}`} aria-hidden="true" />
+      <div className={styles.content}>
+        <p className={styles.greeting}>{content.greeting}</p>
         <h1 id="hero-name">{content.name}</h1>
-        <p className="hero-role">{content.role}</p>
-        <p className="hero-summary">{content.summary}</p>
-        <div className="hero-actions">
-          <a className="button button-primary" href="#experience">{content.primaryAction}</a>
-          <a className="button button-secondary" href="#contact">{content.secondaryAction}</a>
+        <p className={styles.role}>{content.role}</p>
+        <p className={styles.summary}>{content.summary}</p>
+        <div className={styles.actions}>
+          <a className={`${styles.button} ${styles.primary}`} href="#experience">{content.primaryAction}</a>
+          <a className={`${styles.button} ${styles.secondary}`} href="#contact">{content.secondaryAction}</a>
         </div>
       </div>
-      <div className="hero-meta">
-        <span className="status"><i />{content.status}</span>
+      <div className={styles.meta}>
+        <span className={statusStyles.status}><i />{content.status}</span>
         <span>{content.location}</span>
       </div>
-      <ul className="hero-tech" aria-hidden="true">
+      <ul className={styles.tech} aria-hidden="true">
         {content.technologies.map((item) => <li key={item}>{item}</li>)}
       </ul>
     </section>

@@ -1,11 +1,13 @@
-type Props = { label: string; title: string; intro?: string; id: string };
+import styles from "./SectionHeading.module.css";
 
-export function SectionHeading({ label, title, intro, id }: Props) {
+type Props = { label: string; title: string; intro?: string; id: string; className?: string };
+
+export function SectionHeading({ label, title, intro, id, className }: Props) {
   return (
-    <header className="section-heading">
-      <p className="section-kicker">{label}</p>
+    <header className={`${styles.heading} ${className ?? ""}`}>
+      <p className={styles.kicker}>{label}</p>
       <h2 id={id}>{title}</h2>
-      {intro ? <p className="section-intro">{intro}</p> : null}
+      {intro ? <p className={styles.intro}>{intro}</p> : null}
     </header>
   );
 }

@@ -1,0 +1,2 @@
+.skipLink { position: fixed; z-index: var(--layer-skip-link); top: 12px; left: 12px; padding: .7rem 1rem; background: var(--paper); color: var(--carbon); transform: translateY(-150%); transition: transform var(--motion-fast); }
+.skipLink:focus { transform: translateY(0); }

@@ -1,25 +1,26 @@
 import type { ProjectsContent } from "@/content/schema";
 import { SectionHeading } from "../ui/SectionHeading";
 import { TagList } from "../ui/TagList";
+import styles from "./Projects.module.css";
 
 export function Projects({ content }: { content: ProjectsContent }) {
   return (
-    <section className="section projects-section" id="projects" aria-labelledby="projects-heading">
+    <section className="section" id="projects" aria-labelledby="projects-heading">
       <div className="container">
         <SectionHeading label={content.label} title={content.title} intro={content.intro} id="projects-heading" />
-        <div className="projects-grid">
+        <div className={styles.grid}>
           {content.items.map((item, index) => (
-            <article className={`project ${index === 0 ? "project-featured" : ""}`} key={item.id}>
-              <div className="project-index" aria-hidden="true">0{index + 1}</div>
-              <p className="project-kind">{item.kind}</p>
+            <article className={`${styles.project} ${index === 0 ? styles.featured : ""}`} key={item.id}>
+              <div className={styles.index} aria-hidden="true">0{index + 1}</div>
+              <p className={styles.kind}>{item.kind}</p>
               <h3>{item.title}</h3>
-              <div className="project-copy">
+              <div className={styles.copy}>
                 <p>{item.problem}</p>
                 <p>{item.contribution}</p>
               </div>
               <TagList items={item.technologies} />
               {item.href && item.linkLabel ? (
-                <a className="text-link" href={item.href} target="_blank" rel="noreferrer">{item.linkLabel}<span aria-hidden="true">↗</span></a>
+                <a className={styles.link} href={item.href} target="_blank" rel="noreferrer">{item.linkLabel}<span aria-hidden="true">↗</span></a>
               ) : null}
             </article>
           ))}

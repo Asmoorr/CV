@@ -1,10 +1,8 @@
 import { en } from "./en";
+import type { Locale } from "./locale";
 import { ru } from "./ru";
-import type { Locale, ResumeContent } from "./schema";
+import type { ResumeContent } from "./schema";
 
 export const content: Record<Locale, ResumeContent> = { ru, en };
-export const locales: Locale[] = ["ru", "en"];
-
-export function isLocale(value: string): value is Locale {
-  return locales.includes(value as Locale);
-}
+export { isLocale, locales } from "./locale";
+export type { Locale } from "./locale";

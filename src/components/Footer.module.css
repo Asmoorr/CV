@@ -1,0 +1,10 @@
+.footer { border-top: 1px solid var(--rule); }
+.main, .meta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+.main { min-height: 110px; }
+.main > strong { font-size: 1.25rem; }
+.main > span:last-child { color: var(--steel); }
+.meta { min-height: 64px; border-top: 1px solid var(--rule); color: var(--steel); font-size: .72rem; }
+
+@media (max-width: 620px) {
+  .main, .meta { align-items: flex-start; flex-direction: column; justify-content: center; gap: .65rem; padding-block: 1.5rem; }
+}

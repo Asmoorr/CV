@@ -1,8 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import styles from "./HeroField.module.css";
 
 type Point = { x: number; y: number; vx: number; vy: number };
+
+function createRandom(seed: number) {
+  let state = seed >>> 0;
+  return () => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+}
 
 export function HeroField() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -17,6 +26,7 @@ export function HeroField() {
     let width = 0;
     let height = 0;
     let points: Point[] = [];
+    let isVisible = true;
 
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -26,15 +36,17 @@ export function HeroField() {
       canvas.height = height * ratio;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       const count = Math.max(24, Math.min(62, Math.floor(width / 24)));
+      const random = createRandom((Math.round(width) * 73856093) ^ (Math.round(height) * 19349663));
       points = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.18,
-        vy: (Math.random() - 0.5) * 0.18,
+        x: random() * width,
+        y: random() * height,
+        vx: (random() - 0.5) * 0.18,
+        vy: (random() - 0.5) * 0.18,
       }));
     };
 
     const draw = () => {
+      frame = 0;
       context.clearRect(0, 0, width, height);
       for (let index = 0; index < points.length; index += 1) {
         const point = points[index];
@@ -58,17 +70,43 @@ export function HeroField() {
           }
         }
       }
-      if (!reduced) frame = requestAnimationFrame(draw);
+      if (!reduced && isVisible && !document.hidden) frame = requestAnimationFrame(draw);
     };
+
+    const start = () => {
+      if (!frame && !reduced && isVisible && !document.hidden) frame = requestAnimationFrame(draw);
+    };
+
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    const handleResize = () => {
+      stop();
+      resize();
+      draw();
+    };
+
+    const handleVisibility = () => document.hidden ? stop() : start();
+
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) start(); else stop();
+    });
 
     resize();
     draw();
-    window.addEventListener("resize", resize);
+    observer.observe(canvas);
+    window.addEventListener("resize", handleResize);
+    document.addEventListener("visibilitychange", handleVisibility);
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
+      stop();
+      observer.disconnect();
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, []);
 
-  return <canvas ref={ref} className="hero-field" aria-hidden="true" />;
+  return <canvas ref={ref} className={styles.field} aria-hidden="true" />;
 }

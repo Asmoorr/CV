@@ -1,0 +1,23 @@
+:root {
+  --carbon: #0d0f10;
+  --graphite: #15191b;
+  --steel: #a9b0b4;
+  --paper: #f4f7f8;
+  --signal: #48c7f4;
+  --rule: #2a3033;
+  --page: min(1240px, calc(100vw - 112px));
+  --section-space: clamp(6rem, 10vw, 10rem);
+  --header-height: 74px;
+  --layer-header: 100;
+  --layer-cursor: 999;
+  --layer-skip-link: 1000;
+  --motion-fast: .2s;
+}
+
+@media (max-width: 900px) {
+  :root { --page: min(100% - 48px, 760px); --section-space: 6rem; }
+}
+
+@media (max-width: 620px) {
+  :root { --page: calc(100% - 32px); --section-space: 4.5rem; --header-height: 64px; }
+}

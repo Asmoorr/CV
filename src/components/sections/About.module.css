@@ -1,0 +1,19 @@
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 24px; }
+.heading { grid-column: 1 / span 6; }
+.copy { grid-column: 7 / -1; padding-top: .35rem; }
+.copy p { max-width: 67ch; margin: 0 0 1.2rem; color: var(--steel); font-size: 1.04rem; }
+.copy p:first-child { color: var(--paper); font-size: 1.2rem; }
+.facts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin: 5rem 0 0; background: var(--rule); border-block: 1px solid var(--rule); }
+.facts div { padding: 1.5rem 0; background: var(--carbon); }
+.facts dt { font-size: 1.1rem; font-weight: 750; }
+.facts dd { margin: .2rem 0 0; color: var(--steel); font-size: .76rem; }
+
+@media (max-width: 900px) {
+  .heading, .copy { grid-column: 1 / -1; }
+  .copy { margin-top: 3rem; }
+}
+
+@media (max-width: 620px) {
+  .facts { grid-template-columns: 1fr; }
+  .facts div { padding: 1rem 0; }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import styles from "./FinePointerCursor.module.css";
 
 export function FinePointerCursor() {
   const dot = useRef<HTMLDivElement>(null);
@@ -15,16 +16,22 @@ export function FinePointerCursor() {
     let ringX = x;
     let ringY = y;
     let frame = 0;
-    const move = (event: MouseEvent) => { x = event.clientX; y = event.clientY; };
+    const move = (event: MouseEvent) => {
+      x = event.clientX;
+      y = event.clientY;
+      if (dot.current) dot.current.style.transform = `translate3d(${x}px,${y}px,0)`;
+      if (!frame) frame = requestAnimationFrame(draw);
+    };
     const draw = () => {
+      frame = 0;
       ringX += (x - ringX) * 0.16;
       ringY += (y - ringY) * 0.16;
-      if (dot.current) dot.current.style.transform = `translate3d(${x}px,${y}px,0)`;
       if (ring.current) ring.current.style.transform = `translate3d(${ringX}px,${ringY}px,0)`;
-      frame = requestAnimationFrame(draw);
+      if (Math.abs(x - ringX) > 0.1 || Math.abs(y - ringY) > 0.1) {
+        frame = requestAnimationFrame(draw);
+      }
     };
     window.addEventListener("mousemove", move);
-    draw();
     return () => {
       document.documentElement.classList.remove("has-fine-cursor");
       window.removeEventListener("mousemove", move);
@@ -32,5 +39,5 @@ export function FinePointerCursor() {
     };
   }, []);
 
-  return <><div ref={dot} className="cursor-dot" /><div ref={ring} className="cursor-ring" /></>;
+  return <><div ref={dot} className={`${styles.dot} cursor-dot`} /><div ref={ring} className={`${styles.ring} cursor-ring`} /></>;
 }

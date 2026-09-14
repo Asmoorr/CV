@@ -1,4 +1,6 @@
-export type Locale = "ru" | "en";
+import type { Locale } from "./locale";
+
+export type { Locale } from "./locale";
 
 export type NavigationContent = {
   brand: string;

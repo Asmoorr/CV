@@ -1,0 +1,23 @@
+.header { position: fixed; inset: 0 0 auto; z-index: var(--layer-header); min-height: var(--header-height); padding: 1rem max(28px, calc((100vw - var(--page)) / 2)); display: flex; align-items: center; justify-content: space-between; background: rgba(13,15,16,.82); border-bottom: 1px solid rgba(255,255,255,.07); backdrop-filter: blur(22px); }
+.brand { text-decoration: none; font-weight: 800; font-size: 1.05rem; letter-spacing: -.04em; position: relative; z-index: 2; }
+.brand span { color: var(--signal); }
+.panel { display: flex; align-items: center; gap: 2.4rem; }
+.panel nav ul { list-style: none; display: flex; gap: clamp(1rem, 2.4vw, 2.3rem); margin: 0; padding: 0; }
+.panel nav a { color: var(--steel); text-decoration: none; font-size: .78rem; font-weight: 700; transition: color var(--motion-fast); }
+.panel nav a:hover { color: var(--paper); }
+.localeSwitch { display: flex; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--graphite); }
+.localeSwitch a { min-width: 42px; padding: .38rem .65rem; border-radius: 999px; color: var(--steel); text-align: center; text-decoration: none; font-size: .72rem; font-weight: 800; }
+.localeSwitch a[aria-current="page"] { background: var(--signal); color: var(--carbon); }
+.menuButton { display: none; border: 0; background: transparent; color: var(--paper); }
+
+@media (max-width: 900px) {
+  .menuButton { display: grid; gap: 6px; padding: .5rem; position: relative; z-index: 2; }
+  .menuButton span { display: block; width: 24px; height: 1px; background: currentColor; }
+  .panel { position: fixed; inset: 0; padding: 7rem 24px 3rem; background: rgba(13,15,16,.98); flex-direction: column; align-items: stretch; justify-content: space-between; visibility: hidden; opacity: 0; transition: opacity var(--motion-fast), visibility var(--motion-fast); }
+  .panelOpen { visibility: visible; opacity: 1; }
+  .panel nav ul { flex-direction: column; gap: .2rem; }
+  .panel nav a { display: block; padding: .45rem 0; color: var(--paper); font-size: clamp(2rem, 10vw, 4rem); letter-spacing: -.05em; }
+  .localeSwitch { align-self: flex-start; }
+}
+
+@media (max-width: 620px) { .header { padding-inline: 16px; } }

@@ -1,0 +1,13 @@
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 88px; background: var(--carbon); }
+body { margin: 0; background: var(--carbon); color: var(--paper); font-family: var(--font-manrope), Manrope, Arial, sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+a { color: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font: inherit; }
+::selection { background: var(--signal); color: var(--carbon); }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

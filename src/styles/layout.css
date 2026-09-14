@@ -1,0 +1,2 @@
+.container { width: var(--page); margin-inline: auto; }
+.section { padding-block: var(--section-space); border-top: 1px solid var(--rule); }

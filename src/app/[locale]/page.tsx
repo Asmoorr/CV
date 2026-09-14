@@ -9,13 +9,10 @@ import { Timeline } from "@/components/sections/Timeline";
 import { Footer } from "@/components/Footer";
 import { FinePointerCursor } from "@/components/FinePointerCursor";
 import { Header } from "@/components/Header";
-import { content, isLocale, locales } from "@/content";
+import { content, isLocale } from "@/content";
+import styles from "./PageShell.module.css";
 
 type PageProps = { params: Promise<{ locale: string }> };
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
@@ -34,7 +31,7 @@ export default async function ResumePage({ params }: PageProps) {
 
   return (
     <>
-      <a className="skip-link" href="#main">{resume.navigation.skipLabel}</a>
+      <a className={styles.skipLink} href="#main">{resume.navigation.skipLabel}</a>
       <FinePointerCursor />
       <Header locale={locale} content={resume.navigation} />
       <main id="main">
