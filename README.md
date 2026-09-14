@@ -1,21 +1,54 @@
-# РеЗюМеШкА:
+<div align="center">
 
-Двуязычный сайт-резюме на русском и английском языках. Проект построен на Next.js и React, использует типизированный контент и адаптивный интерфейс, а также поддерживает обычный и контейнерный запуск.
+![Розовая волна](https://capsule-render.vercel.app/api?type=waving&color=FF69B4&height=100&section=header)
 
-Корневой адрес перенаправляет на русскую версию:
+# 🌸 РеЗюМеШкА 🌸
 
-- `/ru` — русская версия;
-- `/en` — английская версия.
+### かわいい CV · Артём Трикула
 
-Исходный файл `cv.html` сохранён как референс предыдущей версии сайта.
+`♡ Два языка` · `♡ Типизированный контент` · `♡ Адаптивный интерфейс`
 
-## Документация:
+Двуязычный сайт-резюме на **Next.js** и **React**.<br />
+Маленький, быстрый и аккуратно собранный проект ✨
 
-- [Архитектура](docs/architecture/README.md)
-- [Запуск и развёртывание](docs/running/README.md)
-- [Тестирование](docs/testing/README.md)
-- [Контент и локализация](docs/content/README.md)
+₊˚⊹♡ ────────────── ♡⊹˚₊
 
-## Технологии:
+### 🍓 Языковые версии
 
-Next.js 16, React 19, TypeScript, Vitest, Playwright и Docker.
+![Русская версия](https://img.shields.io/badge/Русская_версия-FF69B4?style=for-the-badge&logo=googletranslate&logoColor=white)
+![English version](https://img.shields.io/badge/English_version-FF85B3?style=for-the-badge&logo=googletranslate&logoColor=white)
+
+Маршруты сайта: `/ru` и `/en`.<br />
+Корневой адрес автоматически перенаправляет на `/ru`.
+
+### 🎀 Технологии
+
+![Next.js](https://img.shields.io/badge/Next.js-FF69B4?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-FF85B3?style=for-the-badge&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-FF9EC4?style=for-the-badge&logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-FFB7D5?style=for-the-badge&logo=nodedotjs&logoColor=7A284F)
+
+![Vitest](https://img.shields.io/badge/Vitest-FF69B4?style=for-the-badge&logo=vitest&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-FF85B3?style=for-the-badge&logo=playwright&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-FF9EC4?style=for-the-badge&logo=docker&logoColor=white)
+![npm](https://img.shields.io/badge/npm-FFB7D5?style=for-the-badge&logo=npm&logoColor=7A284F)
+
+### 📖 Документация
+
+[![Архитектура](https://img.shields.io/badge/🏯_Архитектура-FF69B4?style=for-the-badge&logoColor=white)](docs/architecture/README.md)
+[![Запуск](https://img.shields.io/badge/🌸_Запуск-FF85B3?style=for-the-badge&logoColor=white)](docs/running/README.md)
+
+[![Тестирование](https://img.shields.io/badge/🧪_Тестирование-FF9EC4?style=for-the-badge&logoColor=white)](docs/testing/README.md)
+[![Контент](https://img.shields.io/badge/🍡_Контент_и_локализация-FFB7D5?style=for-the-badge&logoColor=7A284F)](docs/content/README.md)
+
+### 🐾 Немного истории
+
+Исходный `cv.html` бережно сохранён как референс предыдущей версии сайта.
+
+₊˚⊹♡ ────────────── ♡⊹˚₊
+
+<sub>Сделано с кодом, вниманием к деталям и щепоткой kawaii ૮ ˶ᵔ ᵕ ᵔ˶ ა</sub>
+
+![Розовая волна](https://capsule-render.vercel.app/api?type=waving&color=FF69B4&height=100&section=footer)
+
+</div>
