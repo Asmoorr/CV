@@ -1,4 +1,7 @@
-.heading { max-width: 760px; }
+.heading { max-width: 760px; position: relative; isolation: isolate; }
+.number { position: absolute; z-index: -1; inset: clamp(-3.5rem, -4vw, -2rem) auto auto clamp(-.65rem, -1vw, 0rem); color: transparent; font-size: clamp(7rem, 14vw, 13rem); font-weight: 800; line-height: .78; letter-spacing: -.09em; -webkit-text-stroke: 1px rgba(255,255,255,.075); user-select: none; }
 .kicker { margin: 0 0 .9rem; color: var(--signal); font-size: .72rem; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; }
 .heading h2 { max-width: 900px; margin: 0; font-size: clamp(2.5rem, 6vw, 5.8rem); line-height: .98; letter-spacing: -.065em; text-wrap: balance; }
 .intro { max-width: 600px; margin: 1.5rem 0 0; color: var(--steel); font-size: 1.03rem; }
+
+@media (max-width: 620px) { .number { inset-block-start: -2.2rem; font-size: 7rem; } }

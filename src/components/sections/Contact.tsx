@@ -9,7 +9,7 @@ export function Contact({ content }: { content: ContactContent }) {
       <div className={`container ${styles.grid}`}>
         <div className={styles.intro}>
           <p className={styles.kicker}>{content.label}</p>
-          <h2 id="contact-heading">{content.title}</h2>
+          <h2 id="contact-heading">{content.title.lead}<br /><span>{content.title.accent}</span></h2>
           <p className={styles.description}>{content.description}</p>
           <p className={statusStyles.status}><i />{content.status}</p>
         </div>

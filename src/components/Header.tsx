@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { locales, type Locale } from "@/content/locale";
 import type { NavigationContent } from "@/content/schema";
 import styles from "./Header.module.css";
@@ -10,6 +10,22 @@ import styles from "./Header.module.css";
 export function Header({ locale, content }: { locale: Locale; content: NavigationContent }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (!open) return;
+    const media = window.matchMedia("(min-width: 901px)");
+    const closeAtDesktop = () => { if (media.matches) setOpen(false); };
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    media.addEventListener("change", closeAtDesktop);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      media.removeEventListener("change", closeAtDesktop);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
 
   const localeHref = (nextLocale: Locale) => {
     const segments = pathname.split("/");
@@ -30,8 +46,8 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
         aria-label={open ? content.menuClose : content.menuOpen}
         onClick={() => setOpen((value) => !value)}
       >
-        <span />
-        <span />
+        <span className={open ? styles.lineOpenFirst : ""} />
+        <span className={open ? styles.lineOpenSecond : ""} />
       </button>
       <div className={`${styles.panel} ${open ? styles.panelOpen : ""}`}>
         <nav id="primary-navigation" aria-label={content.ariaLabel}>
@@ -52,6 +68,7 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
               onClick={(event) => {
                 const hash = window.location.hash;
                 if (hash) event.currentTarget.href = `${localeHref(item)}${hash}`;
+                setOpen(false);
               }}
             >
               {item.toUpperCase()}

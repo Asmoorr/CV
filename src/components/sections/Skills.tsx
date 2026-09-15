@@ -6,7 +6,7 @@ export function Skills({ content }: { content: SkillsContent }) {
   return (
     <section className="section" id="skills" aria-labelledby="skills-heading">
       <div className={`container ${styles.layout}`}>
-        <SectionHeading className={styles.heading} label={content.label} title={content.title} id="skills-heading" />
+        <SectionHeading className={styles.heading} label={content.label} title={content.title} id="skills-heading" number="04" />
         <div className={styles.core}>
           <p>{content.coreLabel}</p>
           <ul>{content.core.map((item) => <li key={item}>{item}</li>)}</ul>

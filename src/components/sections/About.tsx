@@ -6,9 +6,9 @@ export function About({ content }: { content: AboutContent }) {
   return (
     <section className="section" id="about" aria-labelledby="about-heading">
       <div className={`container ${styles.grid}`}>
-        <SectionHeading className={styles.heading} label={content.label} title={content.title} id="about-heading" />
+        <SectionHeading className={styles.heading} label={content.label} title={content.title} id="about-heading" number="01" />
         <div className={styles.copy}>
-          {content.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          {content.blocks.map((block) => <article key={block.id}><h3>{block.title}</h3><p>{block.text}</p></article>)}
         </div>
         <dl className={styles.facts}>
           {content.facts.map((fact) => (

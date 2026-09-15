@@ -2,7 +2,7 @@ import type { ContactContent } from "../schema";
 
 export const contact: ContactContent = {
   label: "Контакты",
-  title: "Обсудим backend-задачу",
+  title: { lead: "Обсудим", accent: "backend-задачу" },
   description: "Рассматриваю полную занятость, стажировку и проектную работу. Готов к переезду и командировкам.",
   status: "Открыт к предложениям",
   responseTime: "Обычно отвечаю в течение дня",

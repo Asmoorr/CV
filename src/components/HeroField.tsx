@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import styles from "./HeroField.module.css";
 
-type Point = { x: number; y: number; vx: number; vy: number };
+type Point = { x: number; y: number };
 
 function createRandom(seed: number) {
   let state = seed >>> 0;
@@ -18,15 +18,41 @@ export function HeroField() {
 
   useEffect(() => {
     const canvas = ref.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
+    const hero = canvas?.closest("section");
+    const context = canvas?.getContext("2d");
+    if (!canvas || !hero || !context) return;
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let frame = 0;
+    const precisePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     let width = 0;
     let height = 0;
     let points: Point[] = [];
-    let isVisible = true;
+    let pointer: Point | null = null;
+    let frame = 0;
+
+    const draw = () => {
+      frame = 0;
+      context.clearRect(0, 0, width, height);
+      for (const point of points) {
+        const distance = pointer ? Math.hypot(point.x - pointer.x, point.y - pointer.y) : Infinity;
+        const active = distance < 150;
+        context.fillStyle = active ? "rgba(72,199,244,.72)" : "rgba(72,199,244,.27)";
+        context.beginPath();
+        context.arc(point.x, point.y, active ? 1.5 : 1, 0, Math.PI * 2);
+        context.fill();
+        if (active && pointer) {
+          context.strokeStyle = `rgba(72,199,244,${(1 - distance / 150) * .13})`;
+          context.beginPath();
+          context.moveTo(point.x, point.y);
+          context.lineTo(pointer.x, pointer.y);
+          context.stroke();
+        }
+      }
+    };
+
+    const queueDraw = () => {
+      if (!frame) frame = requestAnimationFrame(draw);
+    };
 
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -35,76 +61,30 @@ export function HeroField() {
       canvas.width = width * ratio;
       canvas.height = height * ratio;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const count = Math.max(24, Math.min(62, Math.floor(width / 24)));
       const random = createRandom((Math.round(width) * 73856093) ^ (Math.round(height) * 19349663));
-      points = Array.from({ length: count }, () => ({
-        x: random() * width,
-        y: random() * height,
-        vx: (random() - 0.5) * 0.18,
-        vy: (random() - 0.5) * 0.18,
-      }));
+      const count = Math.max(16, Math.min(32, Math.floor(width / 42)));
+      points = Array.from({ length: count }, () => ({ x: random() * width, y: random() * height }));
+      queueDraw();
     };
 
-    const draw = () => {
-      frame = 0;
-      context.clearRect(0, 0, width, height);
-      for (let index = 0; index < points.length; index += 1) {
-        const point = points[index];
-        if (!reduced) {
-          point.x = (point.x + point.vx + width) % width;
-          point.y = (point.y + point.vy + height) % height;
-        }
-        context.fillStyle = "rgba(72,199,244,.62)";
-        context.beginPath();
-        context.arc(point.x, point.y, 1.15, 0, Math.PI * 2);
-        context.fill();
-        for (let otherIndex = index + 1; otherIndex < points.length; otherIndex += 1) {
-          const other = points[otherIndex];
-          const distance = Math.hypot(point.x - other.x, point.y - other.y);
-          if (distance < 116) {
-            context.strokeStyle = `rgba(72,199,244,${(1 - distance / 116) * 0.14})`;
-            context.beginPath();
-            context.moveTo(point.x, point.y);
-            context.lineTo(other.x, other.y);
-            context.stroke();
-          }
-        }
-      }
-      if (!reduced && isVisible && !document.hidden) frame = requestAnimationFrame(draw);
+    const handlePointer = (event: PointerEvent) => {
+      const bounds = canvas.getBoundingClientRect();
+      pointer = { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+      queueDraw();
     };
-
-    const start = () => {
-      if (!frame && !reduced && isVisible && !document.hidden) frame = requestAnimationFrame(draw);
-    };
-
-    const stop = () => {
-      cancelAnimationFrame(frame);
-      frame = 0;
-    };
-
-    const handleResize = () => {
-      stop();
-      resize();
-      draw();
-    };
-
-    const handleVisibility = () => document.hidden ? stop() : start();
-
-    const observer = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting;
-      if (isVisible) start(); else stop();
-    });
+    const clearPointer = () => { pointer = null; queueDraw(); };
 
     resize();
-    draw();
-    observer.observe(canvas);
-    window.addEventListener("resize", handleResize);
-    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("resize", resize);
+    if (!reduced && precisePointer) {
+      hero.addEventListener("pointermove", handlePointer);
+      hero.addEventListener("pointerleave", clearPointer);
+    }
     return () => {
-      stop();
-      observer.disconnect();
-      window.removeEventListener("resize", handleResize);
-      document.removeEventListener("visibilitychange", handleVisibility);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", resize);
+      hero.removeEventListener("pointermove", handlePointer);
+      hero.removeEventListener("pointerleave", clearPointer);
     };
   }, []);
 

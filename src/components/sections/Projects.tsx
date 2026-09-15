@@ -7,7 +7,7 @@ export function Projects({ content }: { content: ProjectsContent }) {
   return (
     <section className="section" id="projects" aria-labelledby="projects-heading">
       <div className="container">
-        <SectionHeading label={content.label} title={content.title} intro={content.intro} id="projects-heading" />
+        <SectionHeading label={content.label} title={content.title} intro={content.intro} id="projects-heading" number="03" />
         <div className={styles.grid}>
           {content.items.map((item, index) => (
             <article className={`${styles.project} ${index === 0 ? styles.featured : ""}`} key={item.id}>
@@ -17,8 +17,9 @@ export function Projects({ content }: { content: ProjectsContent }) {
               <div className={styles.copy}>
                 <p>{item.problem}</p>
                 <p>{item.contribution}</p>
+                <p className={styles.result}>{item.result}</p>
               </div>
-              <TagList items={item.technologies} />
+              <TagList items={item.tags} />
               {item.href && item.linkLabel ? (
                 <a className={styles.link} href={item.href} target="_blank" rel="noreferrer">{item.linkLabel}<span aria-hidden="true">↗</span></a>
               ) : null}

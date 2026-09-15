@@ -27,18 +27,24 @@ export type HeroContent = {
 export type AboutContent = {
   label: string;
   title: string;
-  paragraphs: string[];
+  blocks: Array<{ id: "general" | "work" | "hobbies"; title: string; text: string }>;
   facts: Array<{ value: string; label: string }>;
 };
+
+export type TagCategory = "contribution" | "technology" | "practice" | "domain";
+export type ContentTag = { label: string; category: TagCategory };
 
 export type TimelineItem = {
   id: string;
   period: string;
+  start: `${number}-${number}`;
+  end: `${number}-${number}` | null;
+  track: "work" | "education";
   kind: string;
   organization: string;
   role: string;
   description: string;
-  technologies: string[];
+  tags: ContentTag[];
   status?: string;
   result?: string;
 };
@@ -56,7 +62,8 @@ export type ProjectItem = {
   kind: string;
   problem: string;
   contribution: string;
-  technologies: string[];
+  result: string;
+  tags: ContentTag[];
   href?: string;
   linkLabel?: string;
 };
@@ -78,7 +85,7 @@ export type SkillsContent = {
 
 export type ContactContent = {
   label: string;
-  title: string;
+  title: { lead: string; accent: string };
   description: string;
   status: string;
   responseTime: string;

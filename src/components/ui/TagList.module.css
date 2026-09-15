@@ -1,2 +1,6 @@
 .list { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.4rem 0 0; padding: 0; list-style: none; }
 .list li { padding: .28rem .65rem; border: 1px solid var(--rule); border-radius: 999px; color: var(--steel); font-size: .7rem; font-weight: 700; }
+.list .contribution { border-color: rgba(72,199,244,.34); color: var(--paper); background: rgba(72,199,244,.07); }
+.list .technology { color: #c5ccd0; }
+.list .practice { border-style: dashed; }
+.list .domain { color: #9fa9ae; background: rgba(255,255,255,.025); }

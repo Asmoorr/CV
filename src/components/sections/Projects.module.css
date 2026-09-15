@@ -7,6 +7,7 @@
 .project h3 { max-width: 14ch; margin: 0; font-size: clamp(1.8rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -.06em; }
 .copy { max-width: 56ch; margin-top: auto; padding-top: 3rem; color: var(--steel); }
 .copy p { margin: .55rem 0; }
+.copy .result { margin-top: 1rem; color: var(--paper); }
 .link { align-self: flex-start; display: flex; gap: .6rem; margin-top: 1.8rem; color: var(--paper); font-weight: 800; text-decoration-thickness: 1px; text-underline-offset: 5px; }
 .link span { color: var(--signal); }
 

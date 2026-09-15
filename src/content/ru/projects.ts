@@ -3,15 +3,21 @@ import type { ProjectsContent } from "../schema";
 export const projects: ProjectsContent = {
   label: "Практика",
   title: "Избранные проекты",
-  intro: "Два проекта, в которых я отвечал за серверную основу и структуру данных.",
+  intro: "Кейсы о задачах, личном вкладе и инженерных решениях — без повторения карьерной хронологии.",
   items: [
     {
       id: "research-publications",
-      title: "Анализ научных публикаций",
-      kind: "Исследовательский backend",
-      problem: "Инструменты для структурированного анализа корпуса научных публикаций.",
-      contribution: "Проектирование базы данных и реализация серверной части библиотечного фреймворка.",
-      technologies: ["Python", "Data Modeling", "Research"],
+      title: "Платформа научных данных",
+      kind: "Исследовательская разработка",
+      problem: "Объединить сбор, обработку и валидацию сведений о научных публикациях в единой системе.",
+      contribution: "Спроектировал данные и backend первого библиотечного фреймворка; после объединения команд отвечаю за микросервис эталонизации данных.",
+      result: "Проект вырос из отдельной библиотеки в общую микросервисную платформу смежных команд.",
+      tags: [
+        { label: "Сервис эталонизации", category: "contribution" },
+        { label: "Python", category: "technology" },
+        { label: "Проектирование данных", category: "practice" },
+        { label: "Научные публикации", category: "domain" },
+      ],
     },
     {
       id: "lkey-store",
@@ -19,7 +25,14 @@ export const projects: ProjectsContent = {
       kind: "Коммерческий проект",
       problem: "Серверная часть каталога и пользовательских сценариев магазина освещения.",
       contribution: "Архитектура приложения, REST API, модель PostgreSQL и кэш Redis.",
-      technologies: ["Django REST Framework", "PostgreSQL", "Redis"],
+      result: "Монолитная backend-система была спроектирована и реализована с нуля для действующего сайта магазина.",
+      tags: [
+        { label: "Backend с нуля", category: "contribution" },
+        { label: "Django REST Framework", category: "technology" },
+        { label: "PostgreSQL", category: "technology" },
+        { label: "Redis", category: "technology" },
+        { label: "E-commerce", category: "domain" },
+      ],
       href: "https://lkey-studio.ru",
       linkLabel: "Открыть сайт",
     },
