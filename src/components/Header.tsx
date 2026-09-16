@@ -12,6 +12,14 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
   const pathname = usePathname();
 
   useEffect(() => {
+    if (sessionStorage.getItem("locale-navigation-scroll") !== "top") return;
+    sessionStorage.removeItem("locale-navigation-scroll");
+    document.documentElement.classList.add("is-wheel-scrolling");
+    window.scrollTo({ top: 0, behavior: "instant" });
+    requestAnimationFrame(() => document.documentElement.classList.remove("is-wheel-scrolling"));
+  }, [pathname]);
+
+  useEffect(() => {
     if (!open) return;
     const media = window.matchMedia("(min-width: 901px)");
     const closeAtDesktop = () => { if (media.matches) setOpen(false); };
@@ -64,12 +72,10 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
             <Link
               key={item}
               href={localeHref(item)}
+              scroll
               aria-current={locale === item ? "page" : undefined}
-              onClick={(event) => {
-                const hash = window.location.hash;
-                if (hash) event.currentTarget.href = `${localeHref(item)}${hash}`;
-                setOpen(false);
-              }}
+              onClick={() => setOpen(false)}
+              onNavigate={() => sessionStorage.setItem("locale-navigation-scroll", "top")}
             >
               {item.toUpperCase()}
             </Link>

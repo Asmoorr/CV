@@ -1,14 +1,22 @@
 .header { position: fixed; inset: 0 0 auto; z-index: var(--layer-header); min-height: var(--header-height); padding: 1rem max(28px, calc((100vw - var(--page)) / 2)); display: flex; align-items: center; justify-content: space-between; background: rgba(13,15,16,.82); border-bottom: 1px solid rgba(255,255,255,.07); backdrop-filter: blur(22px); }
-.brand { text-decoration: none; font-weight: 800; font-size: 1.05rem; letter-spacing: -.04em; position: relative; z-index: 2; }
+.brand { display: inline-block; text-decoration: none; font-weight: 800; font-size: 1.05rem; letter-spacing: -.04em; position: relative; z-index: 2; transition: color var(--motion-fast), transform var(--motion-fast); }
 .brand span { color: var(--signal); }
 .panel { display: flex; align-items: center; gap: 2.4rem; }
 .panel nav ul { list-style: none; display: flex; gap: clamp(1rem, 2.4vw, 2.3rem); margin: 0; padding: 0; }
-.panel nav a { color: var(--steel); text-decoration: none; font-size: .78rem; font-weight: 700; transition: color var(--motion-fast); }
-.panel nav a:hover { color: var(--paper); }
+.panel nav a { display: inline-block; position: relative; color: var(--steel); text-decoration: none; font-size: .78rem; font-weight: 700; transition: color var(--motion-fast), transform var(--motion-fast); }
+.panel nav a::after { content: ""; position: absolute; inset: auto 0 -.35rem; height: 1px; background: var(--signal); transform: scaleX(0); transform-origin: right; transition: transform var(--motion-fast); }
+.panel nav a:hover { color: var(--paper); transform: translateY(-2px); }
+.panel nav a:hover::after { transform: scaleX(1); transform-origin: left; }
 .localeSwitch { display: flex; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--graphite); }
-.localeSwitch a { min-width: 42px; padding: .38rem .65rem; border-radius: 999px; color: var(--steel); text-align: center; text-decoration: none; font-size: .72rem; font-weight: 800; }
+.localeSwitch a { min-width: 42px; padding: .38rem .65rem; border-radius: 999px; color: var(--steel); text-align: center; text-decoration: none; font-size: .72rem; font-weight: 800; transition: color var(--motion-fast), background-color var(--motion-fast), transform var(--motion-fast); }
 .localeSwitch a[aria-current="page"] { background: var(--signal); color: var(--carbon); }
-.menuButton { display: none; border: 0; background: transparent; color: var(--paper); }
+.menuButton { display: none; border: 0; background: transparent; color: var(--paper); transition: color var(--motion-fast), transform var(--motion-fast); }
+
+@media (hover: hover) and (pointer: fine) {
+  .brand:hover, .menuButton:hover { color: var(--signal); transform: translateY(-2px); }
+  .localeSwitch a:hover { background: rgba(72,199,244,.12); color: var(--paper); transform: translateY(-1px); }
+  .localeSwitch a[aria-current="page"]:hover { color: var(--carbon); }
+}
 
 @media (max-width: 900px) {
   .menuButton { display: grid; gap: 6px; padding: .5rem; position: relative; z-index: 2; }

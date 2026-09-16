@@ -4,5 +4,11 @@
   :global(.has-fine-cursor), :global(.has-fine-cursor) a, :global(.has-fine-cursor) button { cursor: none; }
   .dot, .ring { display: block; position: fixed; left: 0; top: 0; z-index: var(--layer-cursor); pointer-events: none; border-radius: 50%; will-change: transform; }
   .dot { width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; background: var(--signal); }
-  .ring { width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid rgba(72,199,244,.42); }
+  .ring { width: 34px; height: 34px; margin: -17px 0 0 -17px; }
+  .ring span { display: block; width: 100%; height: 100%; border: 1px solid rgba(72,199,244,.42); border-radius: inherit; transform: scale(1); transition: transform var(--motion-fast), border-color var(--motion-fast), background-color var(--motion-fast); will-change: transform; }
+  .ring[data-interactive="true"] span { transform: scale(1.65); border-color: rgba(72,199,244,.72); background: rgba(72,199,244,.06); }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .ring[data-interactive="true"] span { transform: scale(1); border-color: rgba(72,199,244,.42); background: transparent; }
 }

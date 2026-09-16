@@ -9,6 +9,7 @@ import { Timeline } from "@/components/sections/Timeline";
 import { Footer } from "@/components/Footer";
 import { FinePointerCursor } from "@/components/FinePointerCursor";
 import { Header } from "@/components/Header";
+import { SmoothWheelScroll } from "@/components/SmoothWheelScroll";
 import { content, isLocale } from "@/content";
 import { buildPageMetadata, buildProfileJsonLd, serializeJsonLd } from "@/lib/seo";
 import { getSiteOrigin } from "@/lib/site";
@@ -35,6 +36,7 @@ export default async function ResumePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <a className={styles.skipLink} href="#main">{resume.navigation.skipLabel}</a>
+      <SmoothWheelScroll />
       <FinePointerCursor />
       <Header locale={locale} content={resume.navigation} />
       <main id="main">
