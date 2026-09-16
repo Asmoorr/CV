@@ -128,7 +128,7 @@ activate_image() {
   local env_file="$1"
 
   compose "$env_file" pull app || return 1
-  compose "$env_file" up --detach --no-build --remove-orphans app || return 1
+  compose "$env_file" up --detach --no-build --force-recreate --remove-orphans app || return 1
   wait_for_container_health "$env_file" && wait_for_public_health
 }
 
