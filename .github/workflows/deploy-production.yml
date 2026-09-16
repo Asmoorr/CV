@@ -135,6 +135,10 @@ jobs:
   deploy:
     name: Deploy to artem-trikula.ru
     needs: [prepare, publish]
+    if: >-
+      always() &&
+      needs.prepare.result == 'success' &&
+      needs.publish.result == 'success'
     runs-on: ubuntu-latest
     environment:
       name: production
@@ -167,7 +171,10 @@ jobs:
             -i "$HOME/.ssh/deploy_key" \
             -p "$DEPLOY_PORT" \
             -o BatchMode=yes \
+            -o ConnectTimeout=20 \
             -o IdentitiesOnly=yes \
+            -o ServerAliveInterval=10 \
+            -o ServerAliveCountMax=3 \
             -o StrictHostKeyChecking=yes \
             -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
             "$DEPLOY_USER@$DEPLOY_HOST" \
