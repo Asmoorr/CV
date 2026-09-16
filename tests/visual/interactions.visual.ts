@@ -112,6 +112,7 @@ test.describe("pointer affordances", () => {
 
 test.describe("language navigation", () => {
   test("opens the selected locale at the top from every source position", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
     const switchToEnglish = () => page.locator('header a[href="/en"]');
     const openMobileMenu = async () => {
       const button = page.getByRole("button", { name: "Открыть меню" });
@@ -120,8 +121,11 @@ test.describe("language navigation", () => {
 
     await page.goto("/ru", { waitUntil: "networkidle" });
     await openMobileMenu();
-    await switchToEnglish().click();
+    const firstNavigation = switchToEnglish().click();
+    await expect(page.locator("[data-locale-transition]")).toHaveAttribute("data-locale-transition", /exiting|waiting/);
+    await firstNavigation;
     await expect(page).toHaveURL(/\/en$/);
+    await expect(page.locator("[data-locale-transition]")).toHaveAttribute("data-locale-transition", "idle");
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
 
     await page.goto("/ru", { waitUntil: "networkidle" });

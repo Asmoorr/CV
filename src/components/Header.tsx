@@ -5,19 +5,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { locales, type Locale } from "@/content/locale";
 import type { NavigationContent } from "@/content/schema";
+import { useLocaleTransition } from "./LocaleTransition";
 import styles from "./Header.module.css";
 
 export function Header({ locale, content }: { locale: Locale; content: NavigationContent }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    if (sessionStorage.getItem("locale-navigation-scroll") !== "top") return;
-    sessionStorage.removeItem("locale-navigation-scroll");
-    document.documentElement.classList.add("is-wheel-scrolling");
-    window.scrollTo({ top: 0, behavior: "instant" });
-    requestAnimationFrame(() => document.documentElement.classList.remove("is-wheel-scrolling"));
-  }, [pathname]);
+  const { beginLocaleTransition, busy } = useLocaleTransition();
 
   useEffect(() => {
     if (!open) return;
@@ -72,10 +66,14 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
             <Link
               key={item}
               href={localeHref(item)}
-              scroll
+              scroll={false}
               aria-current={locale === item ? "page" : undefined}
+              aria-disabled={busy && locale !== item ? true : undefined}
               onClick={() => setOpen(false)}
-              onNavigate={() => sessionStorage.setItem("locale-navigation-scroll", "top")}
+              onNavigate={(event) => {
+                event.preventDefault();
+                beginLocaleTransition(localeHref(item));
+              }}
             >
               {item.toUpperCase()}
             </Link>

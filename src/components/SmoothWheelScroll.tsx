@@ -117,16 +117,27 @@ export function SmoothWheelScroll() {
       target = clamp(target, 0, limit);
     };
 
+    const reset = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      current = window.scrollY;
+      target = current;
+      previousDirection = 0;
+      setState("idle");
+    };
+
     root.dataset.smoothScroll = "enabled";
     setState("idle");
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("scroll", syncPosition, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("smooth-scroll:reset", reset);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("scroll", syncPosition);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("smooth-scroll:reset", reset);
       cancelAnimationFrame(frame);
       root.classList.remove("is-wheel-scrolling");
       delete root.dataset.smoothScroll;

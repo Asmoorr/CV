@@ -9,6 +9,7 @@ import { Timeline } from "@/components/sections/Timeline";
 import { Footer } from "@/components/Footer";
 import { FinePointerCursor } from "@/components/FinePointerCursor";
 import { Header } from "@/components/Header";
+import { LocaleTransitionSurface } from "@/components/LocaleTransition";
 import { SmoothWheelScroll } from "@/components/SmoothWheelScroll";
 import { content, isLocale } from "@/content";
 import { buildPageMetadata, buildProfileJsonLd, serializeJsonLd } from "@/lib/seo";
@@ -39,15 +40,17 @@ export default async function ResumePage({ params }: PageProps) {
       <SmoothWheelScroll />
       <FinePointerCursor />
       <Header locale={locale} content={resume.navigation} />
-      <main id="main">
-        <Hero content={resume.hero} />
-        <About content={resume.about} />
-        <Timeline content={resume.timeline} />
-        <Projects content={resume.projects} />
-        <Skills content={resume.skills} />
-        <Contact content={resume.contact} />
-      </main>
-      <Footer content={resume.footer} />
+      <LocaleTransitionSurface>
+        <main id="main">
+          <Hero content={resume.hero} />
+          <About content={resume.about} />
+          <Timeline content={resume.timeline} />
+          <Projects content={resume.projects} />
+          <Skills content={resume.skills} />
+          <Contact content={resume.contact} />
+        </main>
+        <Footer content={resume.footer} />
+      </LocaleTransitionSurface>
     </>
   );
 }

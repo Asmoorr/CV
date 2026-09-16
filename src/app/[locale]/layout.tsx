@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import localFont from "next/font/local";
+import { LocaleTransitionProvider } from "@/components/LocaleTransition";
 import { isLocale, locales } from "@/content/locale";
 import { getSiteOrigin } from "@/lib/site";
 import "../globals.css";
@@ -34,5 +35,5 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  return <html lang={locale} className={manrope.variable}><body>{children}</body></html>;
+  return <html lang={locale} className={manrope.variable}><body><LocaleTransitionProvider>{children}</LocaleTransitionProvider></body></html>;
 }
