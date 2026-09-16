@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:seo": "node tests/seo.production.mjs",
+    "validate:deployment": "node scripts/validate-deployment.mjs",
     "test:visual": "node tests/build-production.mjs && playwright test",
     "test:visual:update": "node tests/build-production.mjs && playwright test --update-snapshots",
     "test:visual:report": "playwright show-report artifacts/playwright/report"

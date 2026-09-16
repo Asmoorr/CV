@@ -1,0 +1,180 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly DEPLOY_DIR="/opt/artem-trikula"
+readonly COMPOSE_FILE="${DEPLOY_DIR}/compose.production.yaml"
+readonly STATE_FILE="${DEPLOY_DIR}/deployment.env"
+readonly IMAGE_REPOSITORY="ghcr.io/asmoorr/cv"
+readonly PUBLIC_HEALTH_URL="https://artem-trikula.ru/ru"
+readonly LOCK_FILE="/run/lock/artem-trikula-deploy.lock"
+readonly HEALTH_ATTEMPTS=18
+readonly HEALTH_DELAY_SECONDS=5
+
+target_sha="${1:-}"
+
+if [[ "$#" -ne 1 || ! "$target_sha" =~ ^[0-9a-f]{40}$ ]]; then
+  printf 'Usage: %s <full-lowercase-git-sha>\n' "$0" >&2
+  exit 64
+fi
+
+if [[ "${EUID}" -ne 0 ]]; then
+  printf 'This command must run as root through the restricted sudo rule.\n' >&2
+  exit 77
+fi
+
+for command_name in docker curl flock; do
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    printf 'Required command is missing: %s\n' "$command_name" >&2
+    exit 69
+  fi
+done
+
+if [[ ! -f "$COMPOSE_FILE" ]]; then
+  printf 'Compose file is missing: %s\n' "$COMPOSE_FILE" >&2
+  exit 66
+fi
+
+exec 9>"$LOCK_FILE"
+if ! flock -n 9; then
+  printf 'Another production deployment is already running.\n' >&2
+  exit 75
+fi
+
+umask 077
+work_dir="$(mktemp -d "${DEPLOY_DIR}/.deploy.XXXXXX")"
+candidate_env="${work_dir}/candidate.env"
+rollback_env="${work_dir}/rollback.env"
+trap 'rm -rf -- "$work_dir"' EXIT
+
+read_state_value() {
+  local key="$1"
+  local value=""
+
+  if [[ -f "$STATE_FILE" ]]; then
+    value="$(sed -n "s/^${key}=\([0-9a-f]\{40\}\)$/\1/p" "$STATE_FILE" | tail -n 1)"
+  fi
+
+  printf '%s' "$value"
+}
+
+write_compose_env() {
+  local path="$1"
+  local image_tag="$2"
+
+  printf 'IMAGE_REPOSITORY=%s\nIMAGE_TAG=%s\n' "$IMAGE_REPOSITORY" "$image_tag" >"$path"
+  chmod 600 "$path"
+}
+
+compose() {
+  local env_file="$1"
+  shift
+  docker compose --project-name artem-trikula --env-file "$env_file" --file "$COMPOSE_FILE" "$@"
+}
+
+container_id() {
+  local env_file="$1"
+  compose "$env_file" ps --quiet app
+}
+
+print_diagnostics() {
+  local env_file="$1"
+  local id
+  id="$(container_id "$env_file" 2>/dev/null || true)"
+
+  printf 'Deployment diagnostics for SHA %s\n' "$target_sha" >&2
+  if [[ -n "$id" ]]; then
+    docker inspect --format 'container={{.Name}} image={{.Config.Image}} status={{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$id" >&2 || true
+    docker logs --tail 80 "$id" >&2 || true
+  else
+    printf 'No application container is running.\n' >&2
+  fi
+}
+
+wait_for_container_health() {
+  local env_file="$1"
+  local attempt id health
+
+  for ((attempt = 1; attempt <= HEALTH_ATTEMPTS; attempt += 1)); do
+    id="$(container_id "$env_file" 2>/dev/null || true)"
+    if [[ -n "$id" ]]; then
+      health="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$id" 2>/dev/null || true)"
+      if [[ "$health" == "healthy" ]]; then
+        return 0
+      fi
+      if [[ "$health" == "unhealthy" || "$health" == "exited" || "$health" == "dead" ]]; then
+        return 1
+      fi
+    fi
+    sleep "$HEALTH_DELAY_SECONDS"
+  done
+
+  return 1
+}
+
+wait_for_public_health() {
+  local attempt
+
+  for ((attempt = 1; attempt <= HEALTH_ATTEMPTS; attempt += 1)); do
+    if curl --fail --silent --show-error --location --max-time 10 "$PUBLIC_HEALTH_URL" >/dev/null; then
+      return 0
+    fi
+    sleep "$HEALTH_DELAY_SECONDS"
+  done
+
+  return 1
+}
+
+activate_image() {
+  local env_file="$1"
+
+  compose "$env_file" pull app || return 1
+  compose "$env_file" up --detach --no-build --remove-orphans app || return 1
+  wait_for_container_health "$env_file" && wait_for_public_health
+}
+
+write_state() {
+  local current_sha="$1"
+  local previous_sha="$2"
+  local state_tmp="${work_dir}/deployment.env"
+
+  printf 'CURRENT_IMAGE_TAG=%s\n' "$current_sha" >"$state_tmp"
+  if [[ -n "$previous_sha" ]]; then
+    printf 'PREVIOUS_IMAGE_TAG=%s\n' "$previous_sha" >>"$state_tmp"
+  fi
+  chmod 600 "$state_tmp"
+  chown root:root "$state_tmp"
+  mv -- "$state_tmp" "$STATE_FILE"
+}
+
+current_sha="$(read_state_value CURRENT_IMAGE_TAG)"
+previous_sha="$(read_state_value PREVIOUS_IMAGE_TAG)"
+write_compose_env "$candidate_env" "$target_sha"
+
+printf 'Deploying %s:%s\n' "$IMAGE_REPOSITORY" "$target_sha"
+if activate_image "$candidate_env"; then
+  if [[ "$current_sha" == "$target_sha" ]]; then
+    write_state "$target_sha" "$previous_sha"
+  else
+    write_state "$target_sha" "$current_sha"
+  fi
+  printf 'Deployment succeeded: %s\n' "$target_sha"
+  exit 0
+fi
+
+print_diagnostics "$candidate_env"
+
+if [[ -n "$current_sha" && "$current_sha" != "$target_sha" ]]; then
+  printf 'Candidate failed health checks; rolling back to %s.\n' "$current_sha" >&2
+  write_compose_env "$rollback_env" "$current_sha"
+  if activate_image "$rollback_env"; then
+    write_state "$current_sha" "$previous_sha"
+    printf 'Rollback succeeded: %s\n' "$current_sha" >&2
+  else
+    print_diagnostics "$rollback_env"
+    printf 'Rollback failed: %s\n' "$current_sha" >&2
+  fi
+else
+  printf 'No distinct previous image is available for automatic rollback.\n' >&2
+fi
+
+exit 1

@@ -1,0 +1,4 @@
+# Install as /etc/sudoers.d/artem-trikula-deploy with owner root:root and mode 0440.
+# sudo-rs does not support argument regular expressions. The root-owned
+# entrypoint itself rejects anything except one full lowercase commit SHA.
+deploy ALL=(root) NOPASSWD: /usr/local/sbin/deploy-artem-trikula *
