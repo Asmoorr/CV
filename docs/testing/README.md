@@ -10,6 +10,7 @@
 | Стиль кода | `npm run lint` | Ошибки ESLint и предупреждения Next.js |
 | Контент | `npm test` | Нарушения структуры и обязательных правил данных |
 | Production-сборка | `npm run build` | Ошибки сборки и серверного рендеринга |
+| SEO production contract | `npm run test:seo` | Redirect, initial HTML metadata, canonical/hreflang, JSON-LD, robots, sitemap и social images после сборки |
 | Внешний вид | `npm run test:visual` | Нежелательные изменения страниц на разных экранах |
 
 Перед отправкой изменений рекомендуется выполнить все пять проверок.
@@ -88,6 +89,7 @@ npm run typecheck
 npm run lint
 npm test
 npm run build
+npm run test:seo
 npm run test:visual
 ```
 

@@ -5,6 +5,8 @@ RUN npm ci --legacy-peer-deps
 
 FROM node:24-alpine AS builder
 WORKDIR /app
+ARG SITE_URL=https://artem-trikula.ru
+ENV SITE_URL=$SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -12,7 +14,9 @@ RUN npm run build
 
 FROM node:24-alpine AS runner
 WORKDIR /app
+ARG SITE_URL=https://artem-trikula.ru
 ENV NODE_ENV=production
+ENV SITE_URL=$SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000

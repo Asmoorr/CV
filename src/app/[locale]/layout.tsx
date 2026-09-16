@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import localFont from "next/font/local";
 import { isLocale, locales } from "@/content/locale";
+import { getSiteOrigin } from "@/lib/site";
 import "../globals.css";
 
 const manrope = localFont({
@@ -20,6 +22,10 @@ export function generateStaticParams() {
 }
 
 export const dynamicParams = false;
+
+export function generateMetadata(): Metadata {
+  return { metadataBase: new URL(getSiteOrigin()) };
+}
 
 export default async function LocaleLayout({
   children,

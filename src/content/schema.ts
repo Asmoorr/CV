@@ -24,6 +24,14 @@ export type HeroContent = {
   technologies: string[];
 };
 
+export type SeoContent = {
+  title: string;
+  description: string;
+  socialTitle: string;
+  socialDescription: string;
+  imageAlt: string;
+};
+
 export type AboutContent = {
   label: string;
   title: string;
@@ -109,6 +117,7 @@ export type FooterContent = {
 
 export type ResumeContent = {
   locale: Locale;
+  seo: SeoContent;
   navigation: NavigationContent;
   hero: HeroContent;
   about: AboutContent;

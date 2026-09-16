@@ -32,9 +32,12 @@ npm run dev
 
 ## Production-сборка
 
-Создайте оптимизированную сборку:
+Production-сборка требует канонический HTTPS origin. Для рабочего сайта подтверждено значение `https://artem-trikula.ru`; preview-домен, localhost, URL с путём или HTTP будут отклонены до публикации некорректных canonical URL.
 
-```bash
+В PowerShell задайте origin и создайте оптимизированную сборку:
+
+```powershell
+$env:SITE_URL="https://artem-trikula.ru"
 npm run build
 ```
 
@@ -48,10 +51,10 @@ npm run start
 
 ## Docker
 
-Соберите образ:
+Соберите образ (публичный `SITE_URL` не является секретом и доступен как build argument):
 
 ```bash
-docker build -t artem-trikula-cv .
+docker build --build-arg SITE_URL=https://artem-trikula.ru -t artem-trikula-cv .
 ```
 
 Запустите контейнер:
@@ -71,7 +74,11 @@ Dockerfile использует многоэтапную сборку:
 
 ## Переменные окружения
 
-Обязательных пользовательских переменных окружения у проекта нет. Во время контейнерного запуска используются:
+Для production-сборки обязательна переменная:
+
+- `SITE_URL` — канонический HTTPS origin без завершающего пути, query или hash; рабочее значение: `https://artem-trikula.ru`.
+
+Во время контейнерного запуска также используются:
 
 - `NODE_ENV=production`;
 - `NEXT_TELEMETRY_DISABLED=1`;
@@ -79,6 +86,8 @@ Dockerfile использует многоэтапную сборку:
 - `PORT=3000`.
 
 При необходимости порт прямого запуска можно изменить стандартной переменной `PORT`.
+
+После публикации проверьте, что `/robots.txt`, `/sitemap.xml`, canonical, hreflang, Open Graph и JSON-LD содержат именно этот origin. Значения подтверждения Google Search Console и Bing Webmaster Tools относятся к секретам deployment-окружения и не должны попадать в репозиторий.
 
 ## Публикация и откат
 

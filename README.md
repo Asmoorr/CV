@@ -40,6 +40,7 @@
 
 [![Тестирование](https://img.shields.io/badge/🧪_Тестирование-FF9EC4?style=for-the-badge&logoColor=white)](docs/testing/README.md)
 [![Контент](https://img.shields.io/badge/🍡_Контент_и_локализация-FFB7D5?style=for-the-badge&logoColor=7A284F)](docs/content/README.md)
+[![SEO](https://img.shields.io/badge/🔎_SEO_и_измерение-FF69B4?style=for-the-badge&logoColor=white)](docs/seo/README.md)
 
 ### 🐾 Немного истории
 
