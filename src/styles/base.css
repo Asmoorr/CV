@@ -2,6 +2,9 @@
 html { scroll-behavior: smooth; scroll-padding-top: 88px; background: var(--carbon); }
 html.is-wheel-scrolling { scroll-behavior: auto; }
 body { margin: 0; background: var(--carbon); color: var(--paper); font-family: var(--font-manrope), Manrope, Arial, sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+html[data-entry-state="loading"], html[data-entry-state="ready"], html[data-entry-state="exiting"] { overflow: hidden; }
+html[data-reveal-ready="true"] [data-reveal]:not([data-revealed="true"]) { opacity: 0; transform: translateY(24px); }
+[data-reveal] { transition: opacity var(--motion-reveal) var(--ease-out), transform var(--motion-reveal) var(--ease-out); }
 a { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
@@ -16,4 +19,5 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  html[data-reveal-ready="true"] [data-reveal]:not([data-revealed="true"]) { opacity: 1; transform: none; }
 }

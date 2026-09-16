@@ -1,5 +1,6 @@
 import type { ContactContent } from "@/content/schema";
 import statusStyles from "../ui/Status.module.css";
+import { ContactForm } from "./ContactForm";
 import styles from "./Contact.module.css";
 
 export function Contact({ content }: { content: ContactContent }) {
@@ -7,13 +8,14 @@ export function Contact({ content }: { content: ContactContent }) {
   return (
     <section className={`section ${styles.section}`} id="contact" aria-labelledby="contact-heading">
       <div className={`container ${styles.grid}`}>
-        <div className={styles.intro}>
+        <div className={styles.intro} data-reveal>
           <p className={styles.kicker}>{content.label}</p>
           <h2 id="contact-heading">{content.title.lead}<br /><span>{content.title.accent}</span></h2>
           <p className={styles.description}>{content.description}</p>
           <p className={statusStyles.status}><i />{content.status}</p>
         </div>
-        <div className={styles.links}>
+        <ContactForm content={content.form} />
+        <div className={styles.links} data-reveal>
           <a href={`mailto:${content.email}`}><span>{content.emailLabel}</span><strong>{content.email}</strong><i aria-hidden="true">↗</i></a>
           <a href={phoneHref}><span>{content.phoneLabel}</span><strong>{content.phone}</strong><i aria-hidden="true">↗</i></a>
           <a href={content.github} target="_blank" rel="noreferrer"><span>{content.githubLabel}</span><strong>{content.github.replace(/^https?:\/\//, "")}</strong><i aria-hidden="true">↗</i></a>

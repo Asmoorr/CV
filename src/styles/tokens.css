@@ -9,9 +9,14 @@
   --section-space: clamp(6rem, 10vw, 10rem);
   --header-height: 74px;
   --layer-header: 100;
+  --layer-entry: 900;
   --layer-cursor: 999;
   --layer-skip-link: 1000;
   --motion-fast: .2s;
+  --motion-reveal: .72s;
+  --motion-entry: .8s;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --marquee-opacity: .22;
 }
 
 @media (max-width: 900px) {

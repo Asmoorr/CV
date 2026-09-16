@@ -14,4 +14,17 @@ export const contact: ContactContent = {
   githubLabel: "View GitHub",
   location: "Saint Petersburg, Russia",
   locationLabel: "Location",
+  form: {
+    nameLabel: "Name",
+    namePlaceholder: "How should I address you?",
+    emailLabel: "Reply email",
+    emailPlaceholder: "name@example.com",
+    messageLabel: "Message",
+    messagePlaceholder: "Tell me about the role, team, or project",
+    submitLabel: "Send message",
+    requiredError: "Complete this field",
+    emailError: "Enter a valid email",
+    messageLengthError: "Keep the message under 2,000 characters",
+    unavailableMessage: "The form is ready, but delivery is coming later. For now, email me directly.",
+  },
 };

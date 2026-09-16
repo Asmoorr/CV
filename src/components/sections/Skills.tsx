@@ -6,12 +6,12 @@ export function Skills({ content }: { content: SkillsContent }) {
   return (
     <section className="section" id="skills" aria-labelledby="skills-heading">
       <div className={`container ${styles.layout}`}>
-        <SectionHeading className={styles.heading} label={content.label} title={content.title} id="skills-heading" number="04" />
-        <div className={styles.core}>
+        <div className={styles.heading} data-reveal><SectionHeading label={content.label} title={content.title} id="skills-heading" number="04" /></div>
+        <div className={styles.core} data-reveal>
           <p>{content.coreLabel}</p>
           <ul>{content.core.map((item) => <li key={item}>{item}</li>)}</ul>
         </div>
-        <div className={styles.groups}>
+        <div className={styles.groups} data-reveal>
           {content.groups.map((group) => (
             <article key={group.id}>
               <h3>{group.title}</h3>

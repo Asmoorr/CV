@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { content } from "../src/content";
 import { About } from "../src/components/sections/About";
 import { Contact } from "../src/components/sections/Contact";
+import { Footer } from "../src/components/Footer";
 import { Timeline } from "../src/components/sections/Timeline";
 import { TagList } from "../src/components/ui/TagList";
 
@@ -31,11 +32,21 @@ describe("portfolio storytelling components", () => {
     expect(html).toContain("Научные публикации");
   });
 
-  it("renders accent contact copy and direct links without a form", () => {
+  it("renders an accessible frontend-only contact form and direct links", () => {
     const html = renderToStaticMarkup(<Contact content={content.ru.contact} />);
     expect(html).toContain("backend-задачу</span>");
     expect(html).toContain('href="mailto:asmorr@yandex.ru"');
     expect(html).toContain('href="tel:+79803892383"');
-    expect(html).not.toContain("<form");
+    expect(html).toContain("<form");
+    expect(html).toContain('name="message"');
+    expect(html).toContain('role="status"');
+    expect(html).not.toContain('action="');
+  });
+
+  it("renders footer actions without the removed signature", () => {
+    const html = renderToStaticMarkup(<Footer content={content.ru.footer} />);
+    expect(html).toContain("Наверх");
+    expect(html).toContain("Показать вход снова");
+    expect(html).not.toContain("Спроектировано и собрано");
   });
 });

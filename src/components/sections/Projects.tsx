@@ -7,8 +7,8 @@ export function Projects({ content }: { content: ProjectsContent }) {
   return (
     <section className="section" id="projects" aria-labelledby="projects-heading">
       <div className="container">
-        <SectionHeading label={content.label} title={content.title} intro={content.intro} id="projects-heading" number="03" />
-        <div className={styles.grid}>
+        <div data-reveal><SectionHeading label={content.label} title={content.title} intro={content.intro} id="projects-heading" number="03" /></div>
+        <div className={styles.grid} data-reveal>
           {content.items.map((item, index) => (
             <article className={`${styles.project} ${index === 0 ? styles.featured : ""}`} key={item.id}>
               <div className={styles.index} aria-hidden="true">0{index + 1}</div>

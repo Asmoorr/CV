@@ -10,4 +10,5 @@ export const hero: HeroContent = {
   status: "Open to opportunities",
   location: "Saint Petersburg",
   technologies: ["Python", "Django REST", "PostgreSQL", "Redis", "FastAPI", "Docker"],
+  scrollPrompt: "Scroll down",
 };

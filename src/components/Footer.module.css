@@ -1,10 +1,21 @@
 .footer { border-top: 1px solid var(--rule); }
 .main, .meta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
-.main { min-height: 110px; }
-.main > strong { font-size: 1.25rem; }
-.main > span:last-child { color: var(--steel); }
-.meta { min-height: 64px; border-top: 1px solid var(--rule); color: var(--steel); font-size: .72rem; }
+.main { min-height: 170px; }
+.main > div { display: grid; gap: .5rem; }
+.main strong { font-size: 1.25rem; }
+.main > div span { color: var(--steel); font-size: .78rem; }
+.goUp { display: flex; align-items: center; gap: 1rem; padding: 0; border: 0; background: transparent; color: var(--signal); font-weight: 700; text-transform: uppercase; }
+.goUp svg { width: 62px; height: 62px; overflow: visible; }
+.goUp rect { fill: none; stroke: currentColor; stroke-width: 3; }
+.goUp circle { fill: currentColor; transition: transform var(--motion-fast) var(--ease-out); transform-origin: center; }
+.goUp path { fill: none; stroke: var(--carbon); stroke-width: 3; stroke-linecap: square; opacity: 0; transition: opacity var(--motion-fast); }
+.meta { min-height: 64px; justify-content: flex-start; border-top: 1px solid var(--rule); color: var(--steel); font-size: .72rem; }
+.meta button { min-height: 44px; padding: .4rem .2rem; border: 0; background: transparent; color: #778187; font-size: .68rem; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; }
+.notice { margin-left: auto; color: var(--steel); }
+@media (hover: hover) and (pointer: fine) { .goUp:hover circle { transform: scale(1.16); } .goUp:hover path { opacity: 1; } .meta button:hover { color: var(--steel); text-decoration-color: currentColor; } }
 
 @media (max-width: 620px) {
-  .main, .meta { align-items: flex-start; flex-direction: column; justify-content: center; gap: .65rem; padding-block: 1.5rem; }
+  .main, .meta { align-items: flex-start; flex-direction: column; justify-content: center; gap: 1rem; padding-block: 1.5rem; }
+  .goUp { width: 100%; justify-content: space-between; }
+  .notice { margin-left: 0; }
 }

@@ -11,6 +11,8 @@ import { FinePointerCursor } from "@/components/FinePointerCursor";
 import { Header } from "@/components/Header";
 import { LocaleTransitionSurface } from "@/components/LocaleTransition";
 import { SmoothWheelScroll } from "@/components/SmoothWheelScroll";
+import { SiteEntry } from "@/components/SiteEntry";
+import { RevealController } from "@/components/RevealController";
 import { content, isLocale } from "@/content";
 import { buildPageMetadata, buildProfileJsonLd, serializeJsonLd } from "@/lib/seo";
 import { getSiteOrigin } from "@/lib/site";
@@ -38,7 +40,9 @@ export default async function ResumePage({ params }: PageProps) {
       />
       <a className={styles.skipLink} href="#main">{resume.navigation.skipLabel}</a>
       <SmoothWheelScroll />
+      <RevealController />
       <FinePointerCursor />
+      <SiteEntry content={resume.entry} />
       <Header locale={locale} content={resume.navigation} />
       <LocaleTransitionSurface>
         <main id="main">

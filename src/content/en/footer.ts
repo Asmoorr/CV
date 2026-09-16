@@ -5,5 +5,8 @@ export const footer: FooterContent = {
   role: "Backend Developer",
   location: "Saint Petersburg",
   status: "Open to opportunities",
-  signature: "Designed and built by Artyom Trikula",
+  backToTop: "Go up",
+  resetEntry: "Show entry again",
+  resetEntrySuccess: "The entry screen will return on the next page load",
+  resetEntryError: "The entry preference could not be changed",
 };

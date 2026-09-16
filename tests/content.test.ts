@@ -62,11 +62,13 @@ describe("resume content", () => {
     }
   });
 
-  it("keeps contact as direct links without form copy", () => {
+  it("keeps localized frontend-only form copy aligned", () => {
     for (const locale of locales) {
-      expect(Object.keys(content[locale].contact)).not.toContain("form");
+      expect(Object.keys(content[locale].contact)).toContain("form");
       expect(content[locale].contact.title.lead).toBeTruthy();
       expect(content[locale].contact.title.accent).toBeTruthy();
+      expect(content[locale].contact.form.submitLabel).toBeTruthy();
+      expect(content[locale].contact.form.unavailableMessage).toBeTruthy();
     }
   });
 });

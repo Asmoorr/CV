@@ -22,6 +22,13 @@ export type HeroContent = {
   status: string;
   location: string;
   technologies: string[];
+  scrollPrompt: string;
+};
+
+export type EntryContent = {
+  loading: string;
+  enter: string;
+  ariaLabel: string;
 };
 
 export type SeoContent = {
@@ -105,6 +112,19 @@ export type ContactContent = {
   githubLabel: string;
   location: string;
   locationLabel: string;
+  form: {
+    nameLabel: string;
+    namePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    submitLabel: string;
+    requiredError: string;
+    emailError: string;
+    messageLengthError: string;
+    unavailableMessage: string;
+  };
 };
 
 export type FooterContent = {
@@ -112,13 +132,17 @@ export type FooterContent = {
   role: string;
   location: string;
   status: string;
-  signature: string;
+  backToTop: string;
+  resetEntry: string;
+  resetEntrySuccess: string;
+  resetEntryError: string;
 };
 
 export type ResumeContent = {
   locale: Locale;
   seo: SeoContent;
   navigation: NavigationContent;
+  entry: EntryContent;
   hero: HeroContent;
   about: AboutContent;
   timeline: TimelineContent;

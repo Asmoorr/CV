@@ -72,8 +72,8 @@ export function Timeline({ content }: { content: TimelineContent }) {
   return (
     <section className={`section ${styles.section}`} id="experience" aria-labelledby="experience-heading">
       <div className="container">
-        <SectionHeading label={content.label} title={content.title} intro={content.intro} id="experience-heading" number="02" />
-        <div ref={ref} className={`${styles.timeline} ${revealed ? styles.revealed : ""}`}>
+        <div data-reveal><SectionHeading label={content.label} title={content.title} intro={content.intro} id="experience-heading" number="02" /></div>
+        <div ref={ref} data-reveal className={`${styles.timeline} ${revealed ? styles.revealed : ""}`}>
           <div className={styles.ruler} aria-hidden="true">
             {[2024, 2025, 2026, 2027, 2028].map((year) => <span key={year}>{year}</span>)}
           </div>

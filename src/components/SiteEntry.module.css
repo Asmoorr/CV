@@ -1,0 +1,18 @@
+.overlay { position: fixed; inset: 0; z-index: var(--layer-entry); display: grid; place-items: center; overflow: hidden; background: var(--carbon); opacity: 1; transition: opacity var(--motion-entry) var(--ease-out), clip-path var(--motion-entry) var(--ease-out); clip-path: inset(0); }
+.overlay[data-phase="exiting"] { opacity: 0; clip-path: inset(0 0 100% 0); pointer-events: none; }
+.grid { position: absolute; inset: 0; opacity: .26; background-image: linear-gradient(rgba(72,199,244,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(72,199,244,.09) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(circle at center, black, transparent 72%); }
+.center { position: relative; width: min(82vw, 360px); display: grid; justify-items: center; gap: 1.7rem; }
+.loading { min-height: 1.5em; margin: 0; color: var(--steel); font-size: .72rem; font-weight: 700; letter-spacing: .18em; }
+.enter { width: 100%; height: 72px; position: relative; display: grid; place-items: center; padding: 0; border: 0; background: transparent; color: var(--paper); font-size: clamp(1.15rem, 3vw, 1.45rem); font-weight: 700; letter-spacing: .16em; text-transform: uppercase; opacity: 0; transform: translateY(12px); transition: opacity .45s var(--ease-out), transform .45s var(--ease-out), color var(--motion-fast); }
+.overlay[data-phase="ready"] .enter { opacity: 1; transform: none; }
+.enter:disabled { pointer-events: none; }
+.enter span { position: relative; z-index: 1; }
+.enter svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.enter path { fill: rgba(21,25,27,.62); stroke: var(--paper); stroke-width: 1.2; transition: fill var(--motion-fast), stroke var(--motion-fast); }
+.pointer { width: 54px; height: 54px; display: grid; place-items: center; border: 1px solid rgba(244,247,248,.55); border-radius: 50%; opacity: 0; transform: scale(.75); transition: opacity .4s .14s var(--ease-out), transform .4s .14s var(--ease-out); }
+.overlay[data-phase="ready"] .pointer { opacity: 1; transform: scale(1); }
+.pointer i { width: 5px; height: 5px; border-radius: 50%; background: var(--signal); }
+.mark { position: absolute; right: 24px; bottom: 18px; margin: 0; color: rgba(169,176,180,.48); font-size: .65rem; letter-spacing: .14em; }
+@media (hover: hover) and (pointer: fine) { .enter:hover { color: var(--carbon); } .enter:hover path { fill: var(--signal); stroke: var(--signal); } }
+@media (max-width: 620px) { .center { width: min(84vw, 300px); } .grid { background-size: 48px 48px; } }
+@media (prefers-reduced-motion: reduce) { .overlay, .enter, .pointer { transition-duration: .01ms; } .overlay[data-phase="exiting"] { clip-path: none; } }
