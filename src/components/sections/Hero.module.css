@@ -1,6 +1,12 @@
 .hero { min-height: 100svh; position: relative; display: grid; place-items: center; overflow: hidden; padding: 7.5rem max(28px, calc((100vw - var(--page)) / 2)) 6rem; isolation: isolate; }
+.hero::before { content: ""; position: absolute; z-index: -1; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 68%, rgba(72,199,244,.22), transparent 36%); transition: opacity .75s cubic-bezier(.22,1,.36,1); }
 .hero::after { content: ""; position: absolute; inset: 0; z-index: -2; background: radial-gradient(circle at 50% 44%, rgba(72,199,244,.07), transparent 34%), linear-gradient(115deg, transparent 40%, rgba(255,255,255,.018) 50%, transparent 60%); }
 .content { width: min(100%, 1100px); min-width: 0; text-align: center; animation: hero-in .9s cubic-bezier(.22,1,.36,1) both; }
+:global(html[data-entry-state="required"]) [data-entry-hero] .content { animation: none; opacity: 0; transform: translateY(12px); }
+:global(html[data-entry-state="opening"]) [data-entry-hero] .content { animation: hero-in .7s .12s cubic-bezier(.22,1,.36,1) both; }
+:global(html[data-entry-state="opening"]) [data-entry-hero]::before { opacity: 1; }
+:global(html[data-entry-state="entered"]) [data-entry-hero] .content { animation: none; opacity: 1; transform: none; }
+:global(html[data-entry-state="entered"]) [data-entry-hero]::before { opacity: 0; }
 .greeting { margin: 0 0 1rem; color: var(--signal); font-size: .75rem; font-weight: 800; letter-spacing: .32em; text-transform: uppercase; }
 .hero h1 { margin: 0; font-size: clamp(4rem, 10vw, 9.5rem); line-height: .86; letter-spacing: -.075em; text-wrap: balance; }
 .role { margin: 1.7rem 0 .25rem; color: var(--paper); font-size: clamp(1.05rem, 2vw, 1.35rem); font-weight: 700; }
@@ -26,4 +32,10 @@
   .actions { flex-direction: column; align-items: stretch; max-width: 300px; margin-inline: auto; }
   .meta { inset-inline: 16px; }
   .meta > span:last-child { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html[data-entry-state="required"]) [data-entry-hero] .content,
+  :global(html[data-entry-state="opening"]) [data-entry-hero] .content,
+  :global(html[data-entry-state="entered"]) [data-entry-hero] .content { animation: none; opacity: 1; transform: none; }
 }

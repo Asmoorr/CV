@@ -1,10 +1,15 @@
 .footer { border-top: 1px solid var(--rule); }
 .main, .meta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
 .main { min-height: 110px; }
-.main > strong { font-size: 1.25rem; }
-.main > span:last-child { color: var(--steel); }
+.identity, .actions { display: flex; align-items: center; gap: 2rem; }
+.identity > strong { font-size: 1.25rem; }
+.actions { flex: 0 0 auto; }
+.year { color: var(--steel); }
 .meta { min-height: 64px; border-top: 1px solid var(--rule); color: var(--steel); font-size: .72rem; }
+.signatureTools { display: flex; align-items: center; gap: 1rem; }
 
 @media (max-width: 620px) {
-  .main, .meta { align-items: flex-start; flex-direction: column; justify-content: center; gap: .65rem; padding-block: 1.5rem; }
+  .main, .meta, .identity { align-items: flex-start; flex-direction: column; justify-content: center; gap: .65rem; padding-block: 1.5rem; }
+  .signatureTools { align-items: flex-start; flex-direction: column; justify-content: center; gap: .65rem; }
+  .actions { width: 100%; justify-content: space-between; gap: 1rem; }
 }

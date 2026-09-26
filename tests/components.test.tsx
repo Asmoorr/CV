@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { content } from "../src/content";
 import { About } from "../src/components/sections/About";
 import { Contact } from "../src/components/sections/Contact";
+import { Footer } from "../src/components/Footer";
 import { Timeline } from "../src/components/sections/Timeline";
 import { TagList } from "../src/components/ui/TagList";
 
@@ -37,5 +38,18 @@ describe("portfolio storytelling components", () => {
     expect(html).toContain('href="mailto:asmorr@yandex.ru"');
     expect(html).toContain('href="tel:+79803892383"');
     expect(html).not.toContain("<form");
+  });
+
+  it("renders localized footer back-to-top controls without dropping footer details", () => {
+    for (const locale of ["ru", "en"] as const) {
+      const footer = content[locale].footer;
+      const html = renderToStaticMarkup(<Footer content={footer} />);
+      expect(html).toContain(footer.backToTopLabel);
+      expect(html).toContain(`aria-label="${footer.backToTopLabel}"`);
+      expect(html).toContain('data-scroll-target="top"');
+      expect(html).toContain(footer.signature);
+      expect(html).toContain(footer.role);
+      expect(html).toContain(footer.location);
+    }
   });
 });

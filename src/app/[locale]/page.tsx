@@ -41,7 +41,7 @@ export default async function ResumePage({ params }: PageProps) {
       <FinePointerCursor />
       <Header locale={locale} content={resume.navigation} />
       <LocaleTransitionSurface>
-        <main id="main">
+        <main id="main" tabIndex={-1}>
           <Hero content={resume.hero} />
           <About content={resume.about} />
           <Timeline content={resume.timeline} />

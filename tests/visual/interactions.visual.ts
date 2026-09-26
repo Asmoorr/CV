@@ -155,6 +155,80 @@ test("keeps custom cursor disabled for a touch context", async ({ browser }, tes
   await context.close();
 });
 
+test.describe("footer back-to-top control", () => {
+  const controls = [
+    ["ru", "Наверх"],
+    ["en", "Back to top"],
+  ] as const;
+
+  for (const [locale, label] of controls) {
+    test(`${locale} returns to the top from the footer`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.goto(`/${locale}`, { waitUntil: "networkidle" });
+      await expect(page.locator("#top")).toHaveCount(1);
+      await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+
+      const control = page.getByRole("button", { name: label });
+      await expect(control).toBeVisible();
+      await control.click();
+      await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBe(0);
+      await expect(page).toHaveURL(new RegExp(`/${locale}#top$`));
+      await expect(page.locator("main")).toBeFocused();
+    });
+  }
+
+  test("supports keyboard activation and visible focus", async ({ page }) => {
+    await page.goto("/ru", { waitUntil: "networkidle" });
+    await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+
+    const control = page.getByRole("button", { name: "Наверх" });
+    await control.focus();
+    await expect(control).toBeFocused();
+    await expect.poll(() => control.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe("none");
+    await page.keyboard.press("Space");
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBe(0);
+    await expect(page.locator("main")).toBeFocused();
+  });
+
+  test("uses an instant scroll when reduced motion is requested", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/ru", { waitUntil: "networkidle" });
+    await page.evaluate(() => {
+      const nativeScrollTo = window.scrollTo.bind(window);
+      window.scrollTo = ((options: ScrollToOptions) => {
+        document.documentElement.dataset.backToTopBehavior = options.behavior ?? "auto";
+        nativeScrollTo(options);
+      }) as typeof window.scrollTo;
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+    });
+
+    await page.getByRole("button", { name: "Наверх" }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-back-to-top-behavior", "auto");
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBe(0);
+  });
+
+  test("keeps the control within the viewport width", async ({ page }) => {
+    await page.goto("/en", { waitUntil: "networkidle" });
+    const control = page.getByRole("button", { name: "Back to top" });
+    await expect(control).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  });
+
+  test("highlights the arrow without moving footer layout", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop-1440x1000", "Hover is covered once on desktop");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/ru", { waitUntil: "networkidle" });
+    await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+
+    const control = page.getByRole("button", { name: "Наверх" });
+    const meta = page.locator("footer > div:last-child");
+    const before = await meta.boundingBox();
+    await control.hover();
+    await expect.poll(() => control.locator("svg").evaluate((element) => getComputedStyle(element).transform)).not.toBe("none");
+    expect(await meta.boundingBox()).toEqual(before);
+  });
+});
+
 test("keeps keyboard focus visible in both locales", async ({ page }) => {
   for (const locale of ["ru", "en"]) {
     await page.goto(`/${locale}`, { waitUntil: "networkidle" });
