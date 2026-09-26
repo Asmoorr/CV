@@ -5,7 +5,7 @@ import styles from "./Hero.module.css";
 
 export function Hero({ content }: { content: HeroContent }) {
   return (
-    <section className={styles.hero} id="top" aria-labelledby="hero-name">
+    <section className={styles.hero} id="top" aria-labelledby="hero-name" data-entry-hero>
       <HeroField />
       <div className={`${styles.orbit} ${styles.orbitOne}`} aria-hidden="true" />
       <div className={`${styles.orbit} ${styles.orbitTwo}`} aria-hidden="true" />

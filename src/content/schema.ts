@@ -24,6 +24,13 @@ export type HeroContent = {
   technologies: string[];
 };
 
+export type EntryContent = {
+  eyebrow: string;
+  loadingLabel: string;
+  enterLabel: string;
+  hint: string;
+};
+
 export type SeoContent = {
   title: string;
   description: string;
@@ -113,6 +120,10 @@ export type FooterContent = {
   location: string;
   status: string;
   signature: string;
+  backToTopLabel: string;
+  resetEntryLabel: string;
+  resetEntrySuccess: string;
+  resetEntryError: string;
 };
 
 export type ResumeContent = {
@@ -120,6 +131,7 @@ export type ResumeContent = {
   seo: SeoContent;
   navigation: NavigationContent;
   hero: HeroContent;
+  entry: EntryContent;
   about: AboutContent;
   timeline: TimelineContent;
   projects: ProjectsContent;

@@ -1,0 +1,146 @@
+.scene {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--carbon);
+  color: var(--paper);
+  visibility: hidden;
+  pointer-events: none;
+  isolation: isolate;
+  transition: background-color .72s cubic-bezier(.22, 1, .36, 1), visibility .01ms;
+}
+
+:global(html[data-entry-state="required"]) .scene,
+:global(html[data-entry-state="opening"]) .scene {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+:global(html[data-entry-state="opening"]) .scene { background-color: transparent; }
+
+.siteContent { min-height: 100svh; }
+
+:global(html[data-entry-state="required"]) .siteContent { visibility: hidden; }
+:global(html[data-entry-state="opening"]) .siteContent { visibility: visible; }
+:global(html[data-entry-state="required"]),
+:global(html[data-entry-state="opening"]) { overflow: hidden; }
+
+.eyebrow,
+.hint,
+.loading {
+  margin: 0;
+  color: rgba(244, 247, 248, .5);
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.eyebrow, .hint { z-index: 1; transition: opacity .3s ease; }
+
+.eyebrow { position: absolute; top: clamp(28px, 6vh, 56px); }
+.hint { position: absolute; bottom: clamp(28px, 6vh, 56px); letter-spacing: .08em; text-transform: none; }
+
+.centerpiece {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  width: min(82vw, 320px);
+  transform: translate(-50%, -50%);
+}
+
+.loading { min-height: 1rem; font-size: .58rem; letter-spacing: .12em; }
+
+.enterButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(242px, 74vw);
+  min-height: 62px;
+  padding: .75rem 1.5rem;
+  border: 0;
+  background: var(--paper);
+  color: var(--paper);
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 94% 100%, 0 100%);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .24em;
+  transition: color .28s ease, transform .45s cubic-bezier(.22, 1, .36, 1), opacity .35s ease;
+}
+
+.enterButton::before {
+  position: absolute;
+  z-index: 0;
+  inset: 1px;
+  background: var(--carbon);
+  clip-path: polygon(0 0, 100% 0, 100% 77%, 94% 100%, 0 100%);
+  content: "";
+  transition: background .28s ease;
+}
+
+.enterButton span { position: relative; z-index: 1; transform: translateX(.12em); }
+.enterButton:disabled { cursor: wait; opacity: .7; }
+.enterButton:not(:disabled):hover,
+.enterButton:not(:disabled):focus-visible { color: var(--carbon); }
+.enterButton:not(:disabled):hover::before,
+.enterButton:not(:disabled):focus-visible::before { background: var(--paper); }
+.enterButton:focus-visible { outline: 2px solid var(--signal); outline-offset: 7px; }
+
+.marker {
+  position: absolute;
+  top: 72%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(244, 247, 248, .72);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  transition: border-color .4s ease, box-shadow .4s ease;
+}
+
+.marker i { width: 6px; aspect-ratio: 1; border-radius: 50%; background: var(--paper); }
+.scene[data-phase="ready"] .marker { border-color: var(--signal); box-shadow: 0 0 28px rgba(72, 199, 244, .12); }
+
+.wipe {
+  position: fixed;
+  z-index: 0;
+  top: 72%;
+  left: 50%;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(72, 199, 244, .32), rgba(72, 199, 244, .1) 40%, transparent 72%);
+  transform: translate(-50%, -50%);
+  transition: width .72s cubic-bezier(.72, 0, .24, 1), height .72s cubic-bezier(.72, 0, .24, 1);
+}
+
+:global(html[data-entry-state="opening"]) .wipe {
+  width: max(220vw, 220vh);
+  height: max(220vw, 220vh);
+}
+
+:global(html[data-entry-state="opening"]) .enterButton { opacity: 0; transform: scale(1.12); }
+:global(html[data-entry-state="opening"]) .eyebrow,
+:global(html[data-entry-state="opening"]) .hint,
+:global(html[data-entry-state="opening"]) .marker { opacity: 0; transition: opacity .3s ease; }
+
+@media (max-width: 620px) {
+  .eyebrow, .hint { max-width: calc(100vw - 40px); font-size: .58rem; }
+  .centerpiece { top: 40%; }
+  .marker { top: 70%; }
+  .wipe { top: 70%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene, .enterButton, .enterButton::before, .marker, .wipe { transition-duration: .01ms; }
+}

@@ -1,0 +1,38 @@
+.control {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--signal);
+  transition: transform var(--motion-fast);
+}
+
+.emblem {
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding-block-end: .1rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--carbon);
+  color: var(--signal);
+  font-size: 1.55rem;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform var(--motion-fast);
+}
+
+.control:focus-visible .emblem,
+.control:hover .emblem { transform: translateY(-1px); }
+
+@media (hover: hover) and (pointer: fine) {
+  .control:hover { transform: translateY(-2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control:hover { transform: none; }
+}

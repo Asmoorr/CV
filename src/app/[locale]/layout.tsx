@@ -2,9 +2,12 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import localFont from "next/font/local";
+import { EntryExperience } from "@/components/EntryExperience";
 import { LocaleTransitionProvider } from "@/components/LocaleTransition";
+import { content } from "@/content";
 import { isLocale, locales } from "@/content/locale";
 import { getSiteOrigin } from "@/lib/site";
+import { ENTRY_BOOTSTRAP } from "@/lib/site-entry";
 import "../globals.css";
 
 const manrope = localFont({
@@ -35,5 +38,16 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  return <html lang={locale} className={manrope.variable}><body><LocaleTransitionProvider>{children}</LocaleTransitionProvider></body></html>;
+  return (
+    <html lang={locale} className={manrope.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: ENTRY_BOOTSTRAP }} />
+      </head>
+      <body>
+        <LocaleTransitionProvider>
+          <EntryExperience content={content[locale].entry}>{children}</EntryExperience>
+        </LocaleTransitionProvider>
+      </body>
+    </html>
+  );
 }
