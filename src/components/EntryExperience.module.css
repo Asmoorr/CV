@@ -86,61 +86,22 @@
 }
 
 .enterButton span { position: relative; z-index: 1; transform: translateX(.12em); }
-.enterButton:disabled { cursor: wait; opacity: .7; }
+.enterButton:disabled { opacity: .7; }
 .enterButton:not(:disabled):hover,
 .enterButton:not(:disabled):focus-visible { color: var(--carbon); }
 .enterButton:not(:disabled):hover::before,
 .enterButton:not(:disabled):focus-visible::before { background: var(--paper); }
 .enterButton:focus-visible { outline: 2px solid var(--signal); outline-offset: 7px; }
 
-.marker {
-  position: absolute;
-  top: 72%;
-  left: 50%;
-  display: grid;
-  place-items: center;
-  width: 58px;
-  aspect-ratio: 1;
-  border: 1px solid rgba(244, 247, 248, .72);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  transition: border-color .4s ease, box-shadow .4s ease;
-}
-
-.marker i { width: 6px; aspect-ratio: 1; border-radius: 50%; background: var(--paper); }
-.scene[data-phase="ready"] .marker { border-color: var(--signal); box-shadow: 0 0 28px rgba(72, 199, 244, .12); }
-
-.wipe {
-  position: fixed;
-  z-index: 0;
-  top: 72%;
-  left: 50%;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(72, 199, 244, .32), rgba(72, 199, 244, .1) 40%, transparent 72%);
-  transform: translate(-50%, -50%);
-  transition: width .72s cubic-bezier(.72, 0, .24, 1), height .72s cubic-bezier(.72, 0, .24, 1);
-}
-
-:global(html[data-entry-state="opening"]) .wipe {
-  width: max(220vw, 220vh);
-  height: max(220vw, 220vh);
-}
-
 :global(html[data-entry-state="opening"]) .enterButton { opacity: 0; transform: scale(1.12); }
 :global(html[data-entry-state="opening"]) .eyebrow,
-:global(html[data-entry-state="opening"]) .hint,
-:global(html[data-entry-state="opening"]) .marker { opacity: 0; transition: opacity .3s ease; }
+:global(html[data-entry-state="opening"]) .hint { opacity: 0; transition: opacity .3s ease; }
 
 @media (max-width: 620px) {
   .eyebrow, .hint { max-width: calc(100vw - 40px); font-size: .58rem; }
   .centerpiece { top: 40%; }
-  .marker { top: 70%; }
-  .wipe { top: 70%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scene, .enterButton, .enterButton::before, .marker, .wipe { transition-duration: .01ms; }
+  .scene, .enterButton, .enterButton::before { transition-duration: .01ms; }
 }

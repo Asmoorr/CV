@@ -1,30 +1,24 @@
 # Tasks
 
-## 1. Зависимость и root-интеграция Lenis
+## 1. Lenis dependency and root integration
 
-- [ ] 1.1 Добавить pinned production-зависимость `lenis` текущей совместимой стабильной версии и обновить `package-lock.json`; проверить чистую установку без дополнительных animation-библиотек.
-- [ ] 1.2 Создать клиентский `SmoothScrollRoot`/`LenisRoot` на базе `ReactLenis` с `root`, `autoRaf`, `smoothWheel`, `syncTouch: false`, `respectReducedMotion`, `stopInertiaOnNavigate` и единичным wheel multiplier; не добавлять ручной `wheel` listener или второй RAF-loop.
-- [ ] 1.3 Подключить root-адаптер в `src/app/[locale]/layout.tsx`, чтобы страница, Header, Footer и locale transition использовали один viewport-инстанс; проверить отсутствие двойной инициализации при переходах между `/ru` и `/en`.
-- [ ] 1.4 Подключить рекомендуемый CSS Lenis в глобальный style layer и проверить совместимость с `scroll-padding-top`, no-JS fallback, `prefers-reduced-motion` и fixed Header.
+- [x] 1.1 Add and pin the compatible stable `lenis` dependency, update the lockfile, and include the recommended Lenis CSS in the global style layer; verify package installation and stylesheet resolution.
+- [x] 1.2 Add one persistent root integration in the locale layout using `ReactLenis` and automatic RAF; verify the instance initializes once across `/ru` and `/en` navigation and does not introduce a page wrapper or custom scrollbar.
+- [x] 1.3 Configure wheel smoothing, native touch behavior, reduced-motion handling, and public filtering for pinch-to-zoom and horizontal-dominant gestures; verify these inputs remain native and small trackpad deltas remain proportional in Playwright.
 
-## 2. Поведение ввода и программных переходов
+## 2. Entry overlay and nested scrolling
 
-- [ ] 2.1 Настроить публичные Lenis-хуки для пропуска `ctrlKey`/pinch-to-zoom и горизонтально доминирующих wheel-жестов; проверить, что они не меняют `window.scrollY` через smooth-scroll путь.
-- [ ] 2.2 Настроить anchors с offset фиксированной шапки, проверить переходы `#main`, секции и `#top`, отсутствие двойного offset и корректный focus-visible.
-- [ ] 2.3 Перенести `smooth-scroll:reset` на immediate Lenis reset с остановкой остаточной инерции; убрать из `LocaleTransition` прямой `window.scrollTo` и переключение `.is-wheel-scrolling`, сохранив детерминированное открытие локали сверху.
-- [ ] 2.4 Обновить Header: выставлять `data-lenis-prevent` только на открытой мобильной панели, сохранить native `overflow-y: auto` и `overscroll-behavior: contain`; проверить wheel внутри панели и вне неё.
-- [ ] 2.5 Удалить `src/components/SmoothWheelScroll.tsx`, старые `data-smooth-scroll*` ожидания и obsolete CSS-правила после того, как новый engine покрывает все сценарии.
+- [x] 2.1 Connect the Lenis lifecycle to `EntryExperience`; keep the engine stopped through `loading`, `ready`, and `opening`, then start it for `entered` and `bypassed`; verify initial session, returning session, and blocked wheel input while the overlay is active.
+- [x] 2.2 Mark only the open mobile navigation panel as a nested scroll region and preserve its native overflow behavior; verify wheel input scrolls the panel when it can move and does not make the underlying document move, while input outside the panel still scrolls the page.
 
-## 3. Браузерные регрессии
+## 3. Anchors and programmatic navigation
 
-- [ ] 3.1 Переписать smooth-scroll setup в `tests/visual/interactions.visual.ts`: проверять активный Lenis root и фактическую динамику `scrollY`, а не custom `data-smooth-scroll-state`.
-- [ ] 3.2 Сохранить проверки discrete wheel, малых trackpad-like delta, смены направления и обеих границ документа с допусками, устойчивыми к timing Lenis.
-- [ ] 3.3 Добавить проверки `ctrlKey`, горизонтального жеста, открытой nested-панели и native touch/coarse-pointer поведения без принудительной touch-инерции.
-- [ ] 3.4 Добавить тесты `prefers-reduced-motion: reduce` для мгновенного wheel/anchor/reset поведения и тест фактического anchor-offset относительно fixed Header.
-- [ ] 3.5 Сохранить и расширить сценарии смены локали: из верхней позиции, после scroll вниз и при оставшемся hash; проверить отсутствие остаточной инерции и `scrollY === 0` после перехода.
+- [x] 3.1 Enable fragment navigation through the shared Lenis instance and retain a single fixed-header offset source; verify `#main`, section anchors, `#top`, skip-link focus, and target placement below the header without double offset.
+- [x] 3.2 Migrate `BackToTop` to the shared Lenis API, preserving smooth motion, the `#top` URL, and focus transfer to `#main`; verify the reduced-motion path jumps immediately without scrolling again on focus.
+- [x] 3.3 Migrate `LocaleTransition` and `EntryExperience` to distinct immediate top-reset commands through the shared instance; remove `smooth-scroll:reset` dispatches and verify entry remains locked until complete, while locale changes from top/down/stale-hash end at `scrollY === 0` without residual motion.
 
-## 4. Проверка качества и документация
+## 4. Remove the previous controller and verify integration
 
-- [ ] 4.1 Обновить комментарии/локальную документацию о том, что новые nested scroll-контейнеры должны использовать `data-lenis-prevent`, а новый wheel-listener добавлять нельзя.
-- [ ] 4.2 Выполнить `npm run typecheck`, `npm run lint`, `npm test`, production build и релевантный Playwright-набор; устранить timing/layout regressions в RU/EN.
-- [ ] 4.3 Проверить desktop wheel/trackpad, mobile/coarse-pointer, keyboard focus, skip-link, anchors, locale transition и reduced-motion вручную или автоматизированно; зафиксировать отсутствие второго scroll engine и лишнего RAF-loop.
+- [x] 4.1 Remove the manual wheel controller, its mount from the page, old `data-smooth-scroll*` state, and `.is-wheel-scrolling` CSS; verify only one wheel-smoothing mechanism remains and no runtime caller dispatches `smooth-scroll:reset`.
+- [x] 4.2 Replace Playwright assertions on private controller state with checks of actual scroll position and settled behavior; verify wheel, small trackpad-like deltas, direction reversal, document boundaries, horizontal/zoom gestures, nested menu scroll, anchors, entry overlay, `BackToTop`, locale transitions, keyboard focus, and reduced-motion.
+- [x] 4.3 Run `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, and the relevant Playwright suite; resolve any RU/EN or desktop/mobile regressions.
