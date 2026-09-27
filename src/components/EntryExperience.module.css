@@ -87,10 +87,8 @@
 
 .enterButton span { position: relative; z-index: 1; transform: translateX(.12em); }
 .enterButton:disabled { opacity: .7; }
-.enterButton:not(:disabled):hover,
-.enterButton:not(:disabled):focus-visible { color: var(--carbon); }
-.enterButton:not(:disabled):hover::before,
-.enterButton:not(:disabled):focus-visible::before { background: var(--paper); }
+.enterButton:not(:disabled):hover { color: var(--carbon); }
+.enterButton:not(:disabled):hover::before { background: var(--paper); }
 .enterButton:focus-visible { outline: 2px solid var(--signal); outline-offset: 7px; }
 
 :global(html[data-entry-state="opening"]) .enterButton { opacity: 0; transform: scale(1.12); }
