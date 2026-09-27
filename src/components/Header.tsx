@@ -51,7 +51,7 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
         <span className={open ? styles.lineOpenFirst : ""} />
         <span className={open ? styles.lineOpenSecond : ""} />
       </button>
-      <div className={`${styles.panel} ${open ? styles.panelOpen : ""}`}>
+      <div className={`${styles.panel} ${open ? styles.panelOpen : ""}`} data-lenis-prevent={open ? "" : undefined}>
         <nav id="primary-navigation" aria-label={content.ariaLabel}>
           <ul>
             {content.items.map((item) => (

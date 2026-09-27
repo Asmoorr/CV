@@ -1,14 +1,20 @@
 "use client";
 
 import styles from "./BackToTop.module.css";
+import { useLenis } from "lenis/react";
 
 export function BackToTop({ label }: { label: string }) {
+  const lenis = useLenis();
+
   const scrollToTop = () => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    window.dispatchEvent(new Event("smooth-scroll:reset"));
     window.history.replaceState(window.history.state, "", "#top");
-    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+    lenis?.scrollTo(0, {
+      duration: 1.4,
+      easing: (time) => time * time * (3 - 2 * time),
+      immediate: reducedMotion,
+    });
     window.requestAnimationFrame(() => document.getElementById("main")?.focus({ preventScroll: true }));
   };
 

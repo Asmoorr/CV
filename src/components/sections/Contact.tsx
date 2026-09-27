@@ -1,5 +1,4 @@
 import type { ContactContent } from "@/content/schema";
-import statusStyles from "../ui/Status.module.css";
 import styles from "./Contact.module.css";
 
 export function Contact({ content }: { content: ContactContent }) {
@@ -11,7 +10,6 @@ export function Contact({ content }: { content: ContactContent }) {
           <p className={styles.kicker}>{content.label}</p>
           <h2 id="contact-heading">{content.title.lead}<br /><span>{content.title.accent}</span></h2>
           <p className={styles.description}>{content.description}</p>
-          <p className={statusStyles.status}><i />{content.status}</p>
         </div>
         <div className={styles.links}>
           <a href={`mailto:${content.email}`}><span>{content.emailLabel}</span><strong>{content.email}</strong><i aria-hidden="true">↗</i></a>

@@ -3,11 +3,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import localFont from "next/font/local";
 import { EntryExperience } from "@/components/EntryExperience";
+import { InlineBootstrapScript } from "@/components/InlineBootstrapScript";
 import { LocaleTransitionProvider } from "@/components/LocaleTransition";
+import { SmoothWheelScroll } from "@/components/SmoothWheelScroll";
 import { content } from "@/content";
 import { isLocale, locales } from "@/content/locale";
 import { getSiteOrigin } from "@/lib/site";
 import { ENTRY_BOOTSTRAP } from "@/lib/site-entry";
+import "lenis/dist/lenis.css";
 import "../globals.css";
 
 const manrope = localFont({
@@ -41,9 +44,10 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={manrope.variable} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: ENTRY_BOOTSTRAP }} />
+        <InlineBootstrapScript code={ENTRY_BOOTSTRAP} />
       </head>
       <body>
+        <SmoothWheelScroll />
         <LocaleTransitionProvider>
           <EntryExperience content={content[locale].entry}>{children}</EntryExperience>
         </LocaleTransitionProvider>

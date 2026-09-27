@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type TransitionEvent } from "react";
+import { useLenis } from "lenis/react";
 import type { EntryContent } from "@/content/schema";
 import { ENTRY_SESSION_KEY } from "@/lib/site-entry";
+import { FinePointerCursor } from "@/components/FinePointerCursor";
 import styles from "./EntryExperience.module.css";
 
 type EntryPhase = "loading" | "ready" | "opening" | "entered" | "bypassed";
@@ -11,11 +13,19 @@ const OPEN_DURATION = 780;
 const READY_TIMEOUT = 1100;
 
 export function EntryExperience({ content, children }: { content: EntryContent; children: ReactNode }) {
+  const lenis = useLenis();
   const [phase, setPhase] = useState<EntryPhase>("loading");
   const phaseRef = useRef<EntryPhase>("loading");
   const enterButtonRef = useRef<HTMLButtonElement>(null);
   const siteContentRef = useRef<HTMLDivElement>(null);
   const openedRef = useRef(false);
+  const initialBypassRef = useRef(false);
+
+  useEffect(() => {
+    if (!lenis) return;
+    if (phase === "entered" || phase === "bypassed") lenis.start();
+    else lenis.stop();
+  }, [lenis, phase]);
 
   const updatePhase = useCallback((next: EntryPhase) => {
     phaseRef.current = next;
@@ -36,6 +46,7 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
     root.dataset.entryState = initialPhase === "bypassed" ? "bypassed" : "required";
     siteContentRef.current?.toggleAttribute("inert", initialPhase !== "bypassed");
     if (initialPhase === "bypassed") {
+      initialBypassRef.current = true;
       phaseRef.current = "bypassed";
       queueMicrotask(() => setPhase("bypassed"));
     }
@@ -45,13 +56,13 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
     if (phase === "ready" && document.activeElement === document.body) {
       enterButtonRef.current?.focus({ preventScroll: true });
     }
-    if (phase === "entered" && openedRef.current) {
+    if ((phase === "entered" || phase === "bypassed") && openedRef.current) {
       requestAnimationFrame(() => document.getElementById("main")?.focus({ preventScroll: true }));
     }
   }, [phase]);
 
   useEffect(() => {
-    if (phase !== "loading") return;
+    if (phase !== "loading" || initialBypassRef.current) return;
 
     let settled = false;
     let frame = 0;
@@ -88,12 +99,14 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
   const enter = () => {
     if (phaseRef.current !== "ready") return;
 
+    lenis?.scrollTo(0, { immediate: true, force: true });
+
     try {
       window.sessionStorage.setItem(ENTRY_SESSION_KEY, "1");
       updatePhase("opening");
     } catch {
+      openedRef.current = true;
       updatePhase("bypassed");
-      requestAnimationFrame(() => document.getElementById("main")?.focus({ preventScroll: true }));
     }
   };
 
@@ -103,6 +116,7 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
 
   return (
     <>
+      <FinePointerCursor />
       <section
         className={styles.scene}
         data-phase={phase}
@@ -111,7 +125,6 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
         aria-label={content.enterLabel}
         onTransitionEnd={handleTransitionEnd}
       >
-        <div className={styles.wipe} aria-hidden="true" />
         <p className={styles.eyebrow}>{content.eyebrow}</p>
         <div className={styles.centerpiece}>
           <p className={styles.loading} role="status" aria-live="polite">{phase === "loading" ? content.loadingLabel : ""}</p>
@@ -125,7 +138,6 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
             <span>{content.enterLabel}</span>
           </button>
         </div>
-        <span className={styles.marker} aria-hidden="true"><i /></span>
         <p className={styles.hint}>{content.hint}</p>
       </section>
       <div ref={siteContentRef} className={styles.siteContent} data-entry-content>

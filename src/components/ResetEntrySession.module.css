@@ -1,9 +1,9 @@
 .wrap { position: relative; display: inline-flex; align-items: center; }
 .button {
-  display: grid;
+  display: inline-grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
+  inline-size: 3rem;
+  block-size: 3rem;
   padding: 0;
   border: 1px solid transparent;
   border-radius: 50%;
@@ -13,20 +13,21 @@
   opacity: .58;
   transition: color var(--motion-fast), opacity var(--motion-fast), border-color var(--motion-fast);
 }
-.button span { font-size: 1.15rem; line-height: 1; }
+.button span { font-size: 1.55rem; line-height: 1; }
 .button:hover, .button:focus-visible { border-color: var(--rule); color: var(--paper); opacity: 1; }
 .button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
 .message {
   position: absolute;
-  right: 0;
-  bottom: calc(100% + .5rem);
-  width: max-content;
-  max-width: min(19rem, calc(100vw - 48px));
-  color: var(--steel);
-  font-size: .68rem;
-  text-align: right;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
 }
-.message:empty { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .button { transition: none; }
