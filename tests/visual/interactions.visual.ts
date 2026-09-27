@@ -295,3 +295,112 @@ test("uses Lenis for fragment links and keeps section targets below the fixed he
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   expect(await page.evaluate(() => window.scrollY)).toBe(positionAfterSkip);
 });
+
+test.describe("hero text dissolve", () => {
+  async function setHeroProgress(page: import("@playwright/test").Page, progress: number) {
+    const target = await page.locator("#top").evaluate((hero, requestedProgress) => {
+      const distance = (hero as HTMLElement).offsetHeight - window.innerHeight;
+      return Math.round(Math.max(0, Math.min(1, requestedProgress)) * distance);
+    }, progress);
+
+    await page.evaluate((scrollTop) => window.scrollTo({ top: scrollTop, behavior: "instant" }), target);
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBe(target);
+    await page.waitForTimeout(80);
+  }
+
+  async function readWordState(page: import("@playwright/test").Page) {
+    return page.locator("[data-dissolve-word]").evaluateAll((words) => words.map((word) => {
+      const style = getComputedStyle(word);
+      const transform = style.transform;
+      const z = transform.startsWith("matrix3d(") ? Number(transform.slice(9, -1).split(",")[14]) : 0;
+      return { opacity: Number(style.opacity), transform, z };
+    }));
+  }
+
+  test.beforeEach(async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await visitWithEntryComplete(page, "/ru");
+    await setHeroProgress(page, 0);
+  });
+
+  test("keeps localized semantic text and readable words at the top", async ({ page }) => {
+    const name = page.locator("#hero-name");
+    await expect(name).toHaveText("Артём Трикула");
+    await expect(name).toHaveAttribute("data-dissolve-text", "true");
+    await expect.poll(async () => (await readWordState(page)).every((word) => word.opacity === 1 && word.transform === "none")).toBe(true);
+  });
+
+  test("flies words into positive Z at the midpoint and returns on reverse scroll", async ({ page }) => {
+    await setHeroProgress(page, 0.5);
+    const midpoint = await readWordState(page);
+    expect(midpoint.some((word) => word.opacity < 1 && word.transform !== "none")).toBe(true);
+    expect(midpoint.every((word) => word.z > 0)).toBe(true);
+
+    await page.reload({ waitUntil: "networkidle" });
+    await setHeroProgress(page, 0.5);
+    expect(await readWordState(page)).toEqual(midpoint);
+
+    await setHeroProgress(page, 0);
+    const returned = await readWordState(page);
+    expect(returned.every((word) => word.opacity === 1 && word.transform === "none")).toBe(true);
+
+    await setHeroProgress(page, 1);
+    const bottom = await readWordState(page);
+    expect(bottom.every((word) => word.opacity >= 0 && word.opacity <= 1)).toBe(true);
+    expect(bottom.every((word) => word.opacity === 0 && word.z > 0)).toBe(true);
+  });
+
+  test("includes both actions, metadata and circles in the reversible exit", async ({ page }) => {
+    const items = page.locator("[data-dissolve-item]");
+    await expect(items).toHaveCount(6);
+    const opacities = () => items.evaluateAll((elements) => elements.map((element) => Number(getComputedStyle(element).opacity)));
+    await setHeroProgress(page, 0.5);
+    expect((await opacities()).every((opacity) => opacity > 0 && opacity < 1)).toBe(true);
+    await setHeroProgress(page, 1);
+    expect((await opacities()).every((opacity) => opacity === 0)).toBe(true);
+    await page.locator('[data-dissolve-item="experience"]').focus();
+    await expect(page.locator('[data-dissolve-item="experience"]')).toHaveCSS("opacity", "1");
+    await page.locator('[data-dissolve-item="experience"]').evaluate((element) => (element as HTMLElement).blur());
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect.poll(async () => (await opacities()).every((opacity) => opacity === 1)).toBe(true);
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await setHeroProgress(page, 0);
+    expect((await opacities()).every((opacity) => opacity === 1)).toBe(true);
+  });
+
+  test("keeps CTA focusable and the document within the viewport width during retreat", async ({ page }) => {
+    await setHeroProgress(page, 0.75);
+    const contact = page.getByRole("link", { name: "Связаться" });
+    await expect(contact).toBeVisible();
+    await contact.focus();
+    await expect(contact).toBeFocused();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  });
+
+  test("does not dissolve while the entry overlay is locking the page", async ({ page }) => {
+    await page.goto("/en", { waitUntil: "networkidle" });
+    await page.evaluate(() => sessionStorage.removeItem("cv:entry-seen:v1"));
+    await page.reload({ waitUntil: "networkidle" });
+    await expect(page.locator("html")).toHaveAttribute("data-entry-state", "required");
+    const words = page.locator("[data-dissolve-word]");
+    await expect.poll(async () => (await readWordState(page)).every((word) => word.opacity === 1 && word.transform === "none")).toBe(true);
+    await expect(words.first()).toBeAttached();
+  });
+
+  test("returns immediately to a static visible state when reduced motion changes live", async ({ page }) => {
+    await setHeroProgress(page, 0.5);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect.poll(async () => (await readWordState(page)).every((word) => word.opacity === 1 && word.transform === "none")).toBe(true);
+  });
+});
+
+test.describe("hero text dissolve locales", () => {
+  for (const [locale, expectedName] of [["ru", "Артём Трикула"], ["en", "Artyom Trikula"]] as const) {
+    test(`${locale} keeps the server-rendered hero name`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await visitWithEntryComplete(page, `/${locale}`);
+      await expect(page.locator("#hero-name")).toHaveText(expectedName);
+      await expect(page.locator("#hero-name [data-dissolve-word]")).toHaveCount(2);
+    });
+  }
+});

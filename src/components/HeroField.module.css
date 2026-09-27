@@ -1,3 +1,4 @@
-.field { position: absolute; inset: 12% 8%; width: 84%; height: 76%; z-index: -3; opacity: .68; pointer-events: none; mask-image: radial-gradient(circle at center, #000 20%, transparent 74%); }
+.field { position: absolute; inset: 12% 8%; width: 84%; height: 76%; z-index: 0; opacity: calc(.68 + var(--field-emphasis, 0) * .32); pointer-events: none; mask-image: radial-gradient(circle at center, #000 20%, transparent 74%); }
 
-@media (pointer: coarse), (prefers-reduced-motion: reduce) { .field { opacity: .42; } }
+@media (pointer: coarse) { .field { opacity: calc(.55 + var(--field-emphasis, 0) * .45); } }
+@media (prefers-reduced-motion: reduce) { .field { opacity: .42; } }

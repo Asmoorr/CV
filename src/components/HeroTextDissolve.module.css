@@ -1,0 +1,10 @@
+.container { display: block; perspective: 1000px; }
+.word { display: inline-block; backface-visibility: hidden; transform-origin: center; will-change: transform, opacity; }
+.item { backface-visibility: hidden; transform-origin: center; will-change: transform, opacity; }
+.item:focus-visible { opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
+
+@media (max-width: 620px) { .container { perspective: 720px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .word, .item { opacity: 1 !important; transform: none !important; will-change: auto; }
+}
