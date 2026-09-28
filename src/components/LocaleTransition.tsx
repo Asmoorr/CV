@@ -1,11 +1,10 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLenis } from "lenis/react";
+import { localeTransitionCoordinator } from "./localeTransitionCoordinator";
 import styles from "./LocaleTransition.module.css";
-
-type TransitionPhase = "idle" | "exiting" | "waiting" | "entering";
 
 type LocaleTransitionContextValue = {
   beginLocaleTransition: (href: string) => void;
@@ -18,44 +17,46 @@ export function LocaleTransitionProvider({ children }: { children: ReactNode }) 
   const pathname = usePathname();
   const router = useRouter();
   const lenis = useLenis();
-  const [phase, setPhase] = useState<TransitionPhase>("idle");
-  const pendingPath = useRef<string | null>(null);
-  const exitTimer = useRef<number>(0);
-  const settleTimer = useRef<number>(0);
+  const [phase, setPhase] = useState(localeTransitionCoordinator.getPhase);
+
+  useEffect(() => localeTransitionCoordinator.subscribe(setPhase), []);
 
   const beginLocaleTransition = useCallback((href: string) => {
-    if (phase !== "idle" || href === pathname) return;
-
-    pendingPath.current = href;
-    setPhase("exiting");
+    if (localeTransitionCoordinator.getPhase() !== "idle" || href === pathname) return;
     lenis?.stop();
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    exitTimer.current = window.setTimeout(() => {
+    const started = localeTransitionCoordinator.begin(pathname, href, () => {
+      window.scrollTo({ top: 0, behavior: "instant" });
       lenis?.scrollTo(0, { immediate: true, force: true });
-      setPhase("waiting");
       router.push(href, { scroll: false });
-    }, reducedMotion ? 0 : 150);
-  }, [lenis, pathname, phase, router]);
+    }, () => lenis?.start());
+    if (!started) lenis?.start();
+  }, [lenis, pathname, router]);
 
   useEffect(() => {
-    if (!pendingPath.current || pathname !== pendingPath.current) return;
-
-    pendingPath.current = null;
-    lenis?.scrollTo(0, { immediate: true, force: true });
+    const expected = localeTransitionCoordinator.expectedPath();
+    if (!expected || expected === pathname || pathname === localeTransitionCoordinator.sourcePath()) return;
+    localeTransitionCoordinator.abort();
     lenis?.start();
-    const frame = requestAnimationFrame(() => setPhase("entering"));
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    settleTimer.current = window.setTimeout(() => setPhase("idle"), reducedMotion ? 0 : 220);
+  }, [lenis, pathname, phase]);
 
+  useEffect(() => {
+    if (phase !== "waiting" || pathname !== localeTransitionCoordinator.expectedPath() || !lenis) return;
+    let frame = 0;
+    const revealWhenReady = () => {
+      const entryState = document.documentElement.dataset.entryState;
+      if (entryState !== "entered" && entryState !== "bypassed") {
+        frame = requestAnimationFrame(revealWhenReady);
+        return;
+      }
+      localeTransitionCoordinator.enter(pathname, () => {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        lenis.scrollTo(0, { immediate: true, force: true });
+        lenis.start();
+      });
+    };
+    frame = requestAnimationFrame(revealWhenReady);
     return () => cancelAnimationFrame(frame);
-  }, [lenis, pathname]);
-
-  useEffect(() => () => {
-    window.clearTimeout(exitTimer.current);
-    window.clearTimeout(settleTimer.current);
-    lenis?.start();
-  }, [lenis]);
+  }, [lenis, pathname, phase]);
 
   return (
     <LocaleTransitionContext.Provider value={{ beginLocaleTransition, busy: phase !== "idle" }}>
