@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type TransitionEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode, type TransitionEvent } from "react";
 import { useLenis } from "lenis/react";
 import type { EntryContent } from "@/content/schema";
 import { ENTRY_SESSION_KEY } from "@/lib/site-entry";
@@ -18,7 +18,7 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
   const phaseRef = useRef<EntryPhase>("loading");
   const enterButtonRef = useRef<HTMLButtonElement>(null);
   const siteContentRef = useRef<HTMLDivElement>(null);
-  const openedRef = useRef(false);
+  const keyboardEntryRef = useRef(false);
   const initialBypassRef = useRef(false);
 
   useEffect(() => {
@@ -56,10 +56,22 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
     if (phase === "ready" && document.activeElement === document.body) {
       enterButtonRef.current?.focus({ preventScroll: true });
     }
-    if ((phase === "entered" || phase === "bypassed") && openedRef.current) {
-      requestAnimationFrame(() => document.getElementById("main")?.focus({ preventScroll: true }));
-    }
   }, [phase]);
+
+  const focusEnteredContent = useCallback(() => {
+    let attempts = 0;
+    const focusWhenVisible = () => {
+      const target = keyboardEntryRef.current
+        ? document.querySelector<HTMLElement>('[data-entry-hero] a[href="#experience"]')
+        : document.getElementById("main");
+      if (!target || getComputedStyle(target).visibility !== "visible") {
+        if (attempts++ < 60) requestAnimationFrame(focusWhenVisible);
+        return;
+      }
+      target.focus({ preventScroll: true });
+    };
+    requestAnimationFrame(focusWhenVisible);
+  }, []);
 
   useEffect(() => {
     if (phase !== "loading" || initialBypassRef.current) return;
@@ -85,9 +97,9 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
 
   const completeEntry = useCallback(() => {
     if (phaseRef.current !== "opening") return;
-    openedRef.current = true;
     updatePhase("entered");
-  }, [updatePhase]);
+    focusEnteredContent();
+  }, [focusEnteredContent, updatePhase]);
 
   useEffect(() => {
     if (phase !== "opening") return;
@@ -96,8 +108,10 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
     return () => window.clearTimeout(timer);
   }, [phase, completeEntry]);
 
-  const enter = () => {
+  const enter = (event: MouseEvent<HTMLButtonElement>) => {
     if (phaseRef.current !== "ready") return;
+
+    keyboardEntryRef.current = event.detail === 0;
 
     lenis?.scrollTo(0, { immediate: true, force: true });
 
@@ -105,8 +119,8 @@ export function EntryExperience({ content, children }: { content: EntryContent; 
       window.sessionStorage.setItem(ENTRY_SESSION_KEY, "1");
       updatePhase("opening");
     } catch {
-      openedRef.current = true;
       updatePhase("bypassed");
+      focusEnteredContent();
     }
   };
 

@@ -112,6 +112,34 @@ test("locks scrolling behind the entry overlay and restores it for a returning s
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 });
 
+for (const locale of ["ru", "en"]) {
+  test(`${locale} enters by pointer without outlining the hero name`, async ({ page }) => {
+    await page.goto(`/${locale}`, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: locale === "ru" ? "Войти" : "Enter" }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-entry-state", "entered", { timeout: 4000 });
+    await expect(page.locator("main")).toBeFocused();
+    await expect.poll(() => page.locator("#hero-name").evaluate((element) => getComputedStyle(element).outlineStyle)).toBe("none");
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  });
+
+  for (const key of ["Enter", "Space"]) {
+    test(`${locale} enters by ${key} with visible focus on the hero action`, async ({ page }) => {
+      await page.goto(`/${locale}`, { waitUntil: "networkidle" });
+      const enterButton = page.getByRole("button", { name: locale === "ru" ? "Войти" : "Enter" });
+      await enterButton.focus();
+      await page.keyboard.press(key);
+      await expect(page.locator("html")).toHaveAttribute("data-entry-state", "entered", { timeout: 4000 });
+      const action = page.locator('[data-entry-hero] a[href="#experience"]');
+      await expect(action).toBeFocused();
+      await expect.poll(() => action.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe("none");
+      await expect.poll(() => page.locator("#hero-name").evaluate((element) => getComputedStyle(element).outlineStyle)).toBe("none");
+      expect(await page.evaluate(() => window.scrollY)).toBe(0);
+      await page.keyboard.press("Tab");
+      await expect(page.locator('[data-entry-hero] a[href="#contact"]')).toBeFocused();
+    });
+  }
+}
+
 test.describe("pointer affordances", () => {
   test.beforeEach(async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "desktop-1440x1000", "Fine-pointer hover is covered on desktop");
@@ -172,6 +200,90 @@ test.describe("language navigation", () => {
     await expect(page).toHaveURL(/\/en$/);
     expect(await page.evaluate(() => window.location.hash)).toBe("");
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  });
+
+  test("keeps the transition screen and scrollbar stable across the locale layout replacement", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop-1440x1000", "Classic scrollbar geometry is checked on desktop");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await visitWithEntryComplete(page, "/ru");
+    await page.evaluate(() => window.scrollTo({ top: 700, behavior: "instant" }));
+    const before = await page.evaluate(() => ({
+      headerRight: document.querySelector("header")!.getBoundingClientRect().right,
+      contentLeft: document.querySelector("main section .container")!.getBoundingClientRect().left,
+    }));
+    await page.evaluate(() => {
+      const shell = document.querySelector("[data-locale-transition]")!;
+      const record = window as Window & { __localeWaiting?: unknown };
+      new MutationObserver(() => {
+        if (shell.getAttribute("data-locale-transition") !== "waiting") return;
+        record.__localeWaiting = {
+          scrollY: window.scrollY,
+          opacity: getComputedStyle(document.querySelector("#locale-transition-screen")!).opacity,
+          overflow: getComputedStyle(document.documentElement).overflowY,
+          headerRight: document.querySelector("header")!.getBoundingClientRect().right,
+          contentLeft: document.querySelector("main section .container")!.getBoundingClientRect().left,
+        };
+      }).observe(shell, { attributes: true, attributeFilter: ["data-locale-transition"] });
+    });
+
+    await page.locator('header a[href="/en"]').click();
+    const screen = page.locator("#locale-transition-screen");
+    await expect(screen).toBeVisible();
+    await screen.evaluate((element) => { element.dataset.probe = "same-screen"; });
+    await expect(page).toHaveURL(/\/en$/);
+    expect(await page.evaluate(() => (window as Window & { __localeWaiting?: unknown }).__localeWaiting)).toEqual({
+      scrollY: 0, opacity: "1", overflow: "scroll", ...before,
+    });
+    await expect(screen).toHaveAttribute("data-probe", "same-screen");
+    await expect(page.locator("[data-locale-transition]")).toHaveAttribute("data-locale-transition", "idle");
+    await expect(screen).toHaveCount(0);
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    expect(await page.evaluate(() => document.querySelector("header")!.getBoundingClientRect().right)).toBe(before.headerRight);
+  });
+
+  test("blocks input during the transition and restores mobile scrolling", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "mobile-320x800", "Mobile scroll lock is checked on mobile");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await visitWithEntryComplete(page, "/ru");
+    await page.getByRole("button", { name: "Открыть меню" }).click();
+    await page.locator('header a[href="/en"]').click();
+    await expect(page.locator("#locale-transition-screen")).toBeVisible();
+    expect(await page.evaluate(() => {
+      const wheel = new WheelEvent("wheel", { cancelable: true, deltaY: 100 });
+      const touch = new Event("touchmove", { cancelable: true });
+      window.dispatchEvent(wheel);
+      window.dispatchEvent(touch);
+      return { wheel: wheel.defaultPrevented, touch: touch.defaultPrevented };
+    })).toEqual({ wheel: true, touch: true });
+    await expect(page).toHaveURL(/\/en$/);
+    await expect(page.locator("[data-locale-transition]")).toHaveAttribute("data-locale-transition", "idle");
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
+    await page.mouse.move(160, 600);
+    await page.mouse.wheel(0, 120);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  });
+
+  test("cleans up a timed-out transition and works with reduced motion", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop-1440x1000", "Timeout and reduced-motion behavior is checked on desktop");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await visitWithEntryComplete(page, "/ru");
+    await page.evaluate(() => {
+      const original = window.setTimeout;
+      window.setTimeout = ((handler: TimerHandler, delay?: number, ...args: unknown[]) =>
+        original(handler, delay === 8000 ? 25 : delay, ...args)) as typeof window.setTimeout;
+    });
+    await page.locator('header a[href="/en"]').click();
+    await expect(page.locator("#locale-transition-screen")).toHaveCount(0);
+    await expect(page.locator("[data-locale-transition]")).toHaveAttribute("data-locale-transition", "idle");
+    await page.mouse.wheel(0, 120);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+
+    await page.reload({ waitUntil: "networkidle" });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.locator('header a[href="/en"]').click();
+    await expect(page).toHaveURL(/\/en$/);
+    await expect(page.locator("[data-locale-transition]")).toHaveAttribute("data-locale-transition", "idle");
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
   });
 });
 
@@ -251,6 +363,8 @@ test.describe("footer back-to-top control", () => {
     await expect.poll(() => control.locator("span").evaluate((element) => getComputedStyle(element).transform)).not.toBe("none");
     expect(await meta.boundingBox()).toEqual(before);
   });
+
+
 });
 
 test("keeps keyboard focus visible in both locales", async ({ page }) => {
