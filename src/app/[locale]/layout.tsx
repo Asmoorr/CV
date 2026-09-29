@@ -48,7 +48,7 @@ export default async function LocaleLayout({
       </head>
       <body>
         <SmoothWheelScroll />
-        <LocaleTransitionProvider>
+        <LocaleTransitionProvider initialLocale={locale}>
           <EntryExperience content={content[locale].entry}>{children}</EntryExperience>
         </LocaleTransitionProvider>
       </body>

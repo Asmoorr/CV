@@ -8,14 +8,14 @@
 .panel nav a:hover { color: var(--paper); transform: translateY(-2px); }
 .panel nav a:hover::after { transform: scaleX(1); transform-origin: left; }
 .localeSwitch { display: flex; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--graphite); }
-.localeSwitch a { min-width: 42px; padding: .38rem .65rem; border-radius: 999px; color: var(--steel); text-align: center; text-decoration: none; font-size: .72rem; font-weight: 800; transition: color var(--motion-fast), background-color var(--motion-fast), transform var(--motion-fast); }
-.localeSwitch a[aria-current="page"] { background: var(--signal); color: var(--carbon); }
+.localeSwitch button { min-width: 42px; padding: .38rem .65rem; border-radius: 999px; color: var(--steel); text-align: center; text-decoration: none; font-size: .72rem; font-weight: 800; transition: color var(--motion-fast), background-color var(--motion-fast), transform var(--motion-fast); }
+.localeSwitch button[aria-pressed="true"] { background: var(--signal); color: var(--carbon); }
 .menuButton { display: none; border: 0; background: transparent; color: var(--paper); transition: color var(--motion-fast), transform var(--motion-fast); }
 
 @media (hover: hover) and (pointer: fine) {
   .brand:hover, .menuButton:hover { color: var(--signal); transform: translateY(-2px); }
-  .localeSwitch a:hover { background: rgba(72,199,244,.12); color: var(--paper); transform: translateY(-1px); }
-  .localeSwitch a[aria-current="page"]:hover { color: var(--carbon); }
+  .localeSwitch button:hover { background: rgba(72,199,244,.12); color: var(--paper); transform: translateY(-1px); }
+  .localeSwitch button[aria-pressed="true"]:hover { color: var(--carbon); }
 }
 
 @media (max-width: 900px) {
@@ -31,3 +31,5 @@
 }
 
 @media (max-width: 620px) { .header { padding-inline: 16px; } }
+
+.localeSwitch button { border: 0; background: transparent; font-family: inherit; cursor: pointer; }

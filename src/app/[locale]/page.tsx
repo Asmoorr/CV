@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { About } from "@/components/sections/About";
-import { Contact } from "@/components/sections/Contact";
-import { Hero } from "@/components/sections/Hero";
-import { Projects } from "@/components/sections/Projects";
-import { Skills } from "@/components/sections/Skills";
-import { Timeline } from "@/components/sections/Timeline";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { LocaleTransitionSurface } from "@/components/LocaleTransition";
+import { ResumeContent } from "@/components/ResumeContent";
 import { content, isLocale } from "@/content";
 import { buildPageMetadata, buildProfileJsonLd, serializeJsonLd } from "@/lib/seo";
 import { getSiteOrigin } from "@/lib/site";
-import styles from "./PageShell.module.css";
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -34,19 +25,7 @@ export default async function ResumePage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
-      <a className={styles.skipLink} href="#main">{resume.navigation.skipLabel}</a>
-      <Header locale={locale} content={resume.navigation} />
-      <LocaleTransitionSurface>
-        <main id="main" tabIndex={-1}>
-          <Hero content={resume.hero} />
-          <About content={resume.about} />
-          <Timeline content={resume.timeline} />
-          <Projects content={resume.projects} />
-          <Skills content={resume.skills} />
-          <Contact content={resume.contact} />
-        </main>
-        <Footer content={resume.footer} />
-      </LocaleTransitionSurface>
+      <ResumeContent />
     </>
   );
 }

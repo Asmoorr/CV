@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { locales, type Locale } from "@/content/locale";
 import type { NavigationContent } from "@/content/schema";
@@ -10,7 +8,6 @@ import styles from "./Header.module.css";
 
 export function Header({ locale, content }: { locale: Locale; content: NavigationContent }) {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
   const { beginLocaleTransition, busy } = useLocaleTransition();
 
   useEffect(() => {
@@ -28,12 +25,6 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
       document.removeEventListener("keydown", closeOnEscape);
     };
   }, [open]);
-
-  const localeHref = (nextLocale: Locale) => {
-    const segments = pathname.split("/");
-    segments[1] = nextLocale;
-    return segments.join("/");
-  };
 
   return (
     <header className={styles.header}>
@@ -63,20 +54,19 @@ export function Header({ locale, content }: { locale: Locale; content: Navigatio
         </nav>
         <div className={styles.localeSwitch} aria-label={content.languageLabel}>
           {locales.map((item) => (
-            <Link
+            <button
               key={item}
-              href={localeHref(item)}
-              scroll={false}
-              aria-current={locale === item ? "page" : undefined}
-              aria-disabled={busy && locale !== item ? true : undefined}
-              onClick={() => setOpen(false)}
-              onNavigate={(event) => {
-                event.preventDefault();
-                beginLocaleTransition(localeHref(item));
+              type="button"
+              data-locale={item}
+              aria-pressed={locale === item}
+              aria-disabled={busy || locale === item}
+              onClick={() => {
+                setOpen(false);
+                beginLocaleTransition(item);
               }}
             >
               {item.toUpperCase()}
-            </Link>
+            </button>
           ))}
         </div>
       </div>

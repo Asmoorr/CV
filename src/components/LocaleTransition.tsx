@@ -1,66 +1,48 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { useLenis } from "lenis/react";
-import { localeTransitionCoordinator } from "./localeTransitionCoordinator";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { flushSync } from "react-dom";
+import type { Locale } from "@/content";
+import { animateLocaleText, captureLocaleLayout } from "./localeTextAnimation";
 import styles from "./LocaleTransition.module.css";
 
 type LocaleTransitionContextValue = {
-  beginLocaleTransition: (href: string) => void;
+  locale: Locale;
+  beginLocaleTransition: (locale: Locale) => void;
   busy: boolean;
 };
 
 const LocaleTransitionContext = createContext<LocaleTransitionContextValue | null>(null);
 
-export function LocaleTransitionProvider({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const lenis = useLenis();
-  const [phase, setPhase] = useState(localeTransitionCoordinator.getPhase);
+export function LocaleTransitionProvider({ children, initialLocale }: { children: ReactNode; initialLocale: Locale }) {
+  const [locale, setLocale] = useState(initialLocale);
+  const [busy, setBusy] = useState(false);
+  const shell = useRef<HTMLDivElement>(null);
+  const cleanup = useRef<(() => void) | null>(null);
+  const running = useRef(false);
 
-  useEffect(() => localeTransitionCoordinator.subscribe(setPhase), []);
+  useEffect(() => () => cleanup.current?.(), []);
 
-  const beginLocaleTransition = useCallback((href: string) => {
-    if (localeTransitionCoordinator.getPhase() !== "idle" || href === pathname) return;
-    lenis?.stop();
-    const started = localeTransitionCoordinator.begin(pathname, href, () => {
-      window.scrollTo({ top: 0, behavior: "instant" });
-      lenis?.scrollTo(0, { immediate: true, force: true });
-      router.push(href, { scroll: false });
-    }, () => lenis?.start());
-    if (!started) lenis?.start();
-  }, [lenis, pathname, router]);
-
-  useEffect(() => {
-    const expected = localeTransitionCoordinator.expectedPath();
-    if (!expected || expected === pathname || pathname === localeTransitionCoordinator.sourcePath()) return;
-    localeTransitionCoordinator.abort();
-    lenis?.start();
-  }, [lenis, pathname, phase]);
-
-  useEffect(() => {
-    if (phase !== "waiting" || pathname !== localeTransitionCoordinator.expectedPath() || !lenis) return;
-    let frame = 0;
-    const revealWhenReady = () => {
-      const entryState = document.documentElement.dataset.entryState;
-      if (entryState !== "entered" && entryState !== "bypassed") {
-        frame = requestAnimationFrame(revealWhenReady);
-        return;
-      }
-      localeTransitionCoordinator.enter(pathname, () => {
-        window.scrollTo({ top: 0, behavior: "instant" });
-        lenis.scrollTo(0, { immediate: true, force: true });
-        lenis.start();
-      });
-    };
-    frame = requestAnimationFrame(revealWhenReady);
-    return () => cancelAnimationFrame(frame);
-  }, [lenis, pathname, phase]);
+  const beginLocaleTransition = (next: Locale) => {
+    if (running.current || next === locale || !shell.current) return;
+    const root = shell.current;
+    const before = captureLocaleLayout(root);
+    running.current = true;
+    flushSync(() => {
+      setLocale(next);
+      setBusy(true);
+    });
+    document.documentElement.lang = next;
+    cleanup.current = animateLocaleText(root, next, before, () => {
+      running.current = false;
+      setBusy(false);
+      cleanup.current = null;
+    });
+  };
 
   return (
-    <LocaleTransitionContext.Provider value={{ beginLocaleTransition, busy: phase !== "idle" }}>
-      <div className={styles.shell} data-locale-transition={phase} aria-busy={phase !== "idle"}>
+    <LocaleTransitionContext.Provider value={{ locale, beginLocaleTransition, busy }}>
+      <div ref={shell} className={styles.shell} data-locale-transition={busy ? "scrambling" : "idle"} aria-busy={busy}>
         {children}
       </div>
     </LocaleTransitionContext.Provider>
