@@ -63,6 +63,21 @@ test.describe("language switching in place", () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before);
   });
 
+  test("animates visible contact copy when switching language from the contact section", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await visit(page, "/ru#contact");
+    await page.locator("#contact").scrollIntoViewIfNeeded();
+    await switchLanguage(page, "en");
+    await expect(shell(page)).toHaveAttribute("data-locale-transition", "scrambling");
+    await expect(page.locator("#contact label [data-locale-scramble]").first()).toBeAttached();
+    await expect(page.locator("#contact-heading [data-locale-scramble]").first()).toBeAttached();
+    await expect(page.locator('#contact input[name="name"]')).not.toHaveAttribute("placeholder", "How should I address you?");
+    await expect(shell(page)).toHaveAttribute("data-locale-transition", "idle");
+    await expect(page.locator("#contact")).toContainText("a backend challenge");
+    await expect(page.getByLabel("Your name")).toBeVisible();
+    await expect(page.getByLabel("Your name")).toHaveAttribute("placeholder", "How should I address you?");
+  });
+
   test("supports reduced motion and cancels cleanly when the preference changes", async ({ page }) => {
     await visit(page, "/ru");
     await switchLanguage(page, "en");

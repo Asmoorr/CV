@@ -102,6 +102,24 @@ export type ContactContent = {
   label: string;
   title: { lead: string; accent: string };
   description: string;
+  form: {
+    nameLabel: string;
+    namePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    submitLabel: string;
+    sendingLabel: string;
+    requiredError: string;
+    invalidEmailError: string;
+    tooLongError: string;
+    validationFailed: string;
+    successMessage: string;
+    deliveryError: string;
+    rateLimitError: string;
+    unavailableError: string;
+  };
   status: string;
   responseTime: string;
   phone: string;
@@ -113,6 +131,8 @@ export type ContactContent = {
   location: string;
   locationLabel: string;
 };
+
+export const CONTACT_FIELD_LIMITS = { name: 120, email: 254, message: 1500 } as const;
 
 export type FooterContent = {
   name: string;

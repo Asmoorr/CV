@@ -1,5 +1,5 @@
 * { box-sizing: border-box; }
-html { scroll-padding-top: 88px; scrollbar-gutter: stable; background: var(--carbon); }
+html { scroll-padding-top: var(--header-anchor-offset); scrollbar-gutter: stable; background: var(--carbon); }
 body { margin: 0; background: var(--carbon); color: var(--paper); font-family: var(--font-manrope), Manrope, Arial, sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
 a { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }

@@ -8,6 +8,7 @@
   --page: min(1240px, calc(100vw - 112px));
   --section-space: clamp(6rem, 10vw, 10rem);
   --header-height: 74px;
+  --header-anchor-offset: 88px;
   --layer-header: 100;
   --layer-cursor: 999;
   --layer-skip-link: 1000;

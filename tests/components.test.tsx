@@ -32,12 +32,30 @@ describe("portfolio storytelling components", () => {
     expect(html).toContain("Научные публикации");
   });
 
-  it("renders accent contact copy and direct links without a form", () => {
+  it("renders a localized contact form alongside direct links", () => {
     const html = renderToStaticMarkup(<Contact content={content.ru.contact} />);
     expect(html).toContain("backend-задачу</span>");
     expect(html).toContain('href="mailto:asmorr@yandex.ru"');
     expect(html).toContain('href="tel:+79803892383"');
-    expect(html).not.toContain("<form");
+    expect(html).toContain("<form");
+    expect(html).toContain('name="name"');
+    expect(html).toContain('name="email"');
+    expect(html).toContain('name="message"');
+    expect(html).toContain('autoComplete="name"');
+    expect(html).toContain('autoComplete="email"');
+    expect(html).toContain("Сообщение");
+    expect(html).not.toContain("Открыт к предложениям");
+  });
+
+  it("renders form labels and controls in both locales", () => {
+    for (const locale of ["ru", "en"] as const) {
+      const html = renderToStaticMarkup(<Contact content={content[locale].contact} />);
+      expect(html).toContain(content[locale].contact.form.nameLabel);
+      expect(html).toContain(content[locale].contact.form.emailLabel);
+      expect(html).toContain(content[locale].contact.form.messageLabel);
+      expect(html).toContain(content[locale].contact.form.submitLabel);
+      expect(html).toContain('type="email"');
+    }
   });
 
   it("renders localized footer back-to-top controls without dropping footer details", () => {

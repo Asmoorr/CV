@@ -1,0 +1,56 @@
+.form {
+  grid-column: 1 / -1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  margin: 0;
+}
+
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); }
+.field { display: flex; min-width: 0; flex-direction: column; }
+.field label { margin-bottom: .45rem; color: var(--steel); font-size: .84rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.field input, .field textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: .75rem 1rem;
+  background: transparent;
+  color: var(--paper);
+  font: inherit;
+  font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+  outline: none;
+  transition: border-color var(--motion-fast), background-color var(--motion-fast), color var(--motion-fast);
+}
+.field input::placeholder, .field textarea::placeholder { color: color-mix(in srgb, var(--steel) 62%, transparent); opacity: 1; }
+.field input:focus, .field textarea:focus { border-color: var(--signal); background: rgba(72,199,244,.035); }
+.field input[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: #ff6b6b; }
+.messageField { display: flex; flex: 1; min-height: 0; flex-direction: column; margin-top: clamp(.8rem, 1.5vh, 1.1rem); }
+.field textarea { flex: 1; min-height: 0; resize: none; line-height: 1.35; }
+.error { display: block; min-height: 1.2rem; padding-top: .16rem; color: #ff8585; font-size: .84rem; line-height: 1.2; }
+.error:empty { min-height: 0; padding: 0; }
+.actions { display: flex; min-height: 52px; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .55rem; }
+.status { min-height: 1.5em; margin: 0; color: var(--steel); font-size: .95rem; }
+.status:empty { visibility: hidden; }
+.form button { display: inline-flex; min-height: 52px; align-items: center; gap: 1.2rem; border: 1px solid var(--signal); padding: .65rem 1.15rem; background: transparent; color: var(--paper); cursor: pointer; font: inherit; font-size: .95rem; font-weight: 800; transition: color var(--motion-fast), background-color var(--motion-fast), transform var(--motion-fast), opacity var(--motion-fast); }
+.form button i { color: var(--signal); font-size: 1.2rem; font-style: normal; }
+.form button:disabled { cursor: wait; opacity: .55; }
+
+@media (hover: hover) and (pointer: fine) {
+  .form button:not(:disabled):hover { transform: translateY(-2px); background: var(--signal); color: var(--carbon); }
+  .form button:not(:disabled):hover i { color: inherit; }
+}
+
+@media (max-width: 900px) {
+  .form { min-height: 370px; }
+}
+
+@media (max-width: 620px) {
+  .form { min-height: 0; }
+  .fields { grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+  .messageField { flex: none; margin-top: .8rem; }
+  .field textarea { min-height: 11rem; }
+  .actions { align-items: flex-start; flex-direction: column; padding-top: .6rem; }
+  .form button { align-self: flex-start; }
+}

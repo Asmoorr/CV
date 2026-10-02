@@ -2,7 +2,7 @@ import type { Locale } from "@/content";
 
 const DURATION = 2200;
 const ALPHABETS = { ru: "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ", en: "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
-const LAYOUT_SELECTOR = "header nav a, main a, main button, main article, main h1, main h2, main h3, main p, main li, footer a, footer button";
+const LAYOUT_SELECTOR = "header nav a, main a, main button, main article, main h1, main h2, main h3, main p, main li, main label, footer a, footer button";
 
 export function captureLocaleLayout(root: HTMLElement) {
   return Array.from(root.querySelectorAll<HTMLElement>(LAYOUT_SELECTOR), (element) => ({
@@ -20,6 +20,7 @@ export function animateLocaleText(root: HTMLElement, locale: Locale, before: Ret
   const animations: Animation[] = [];
   const restores: Array<() => void> = [];
   const words: Array<{ overlay: HTMLElement; box: HTMLElement; text: string; delay: number }> = [];
+  const placeholders: Array<{ element: HTMLInputElement | HTMLTextAreaElement; text: string }> = [];
   let frame = 0;
   let finished = false;
   let timer = 0;
@@ -58,12 +59,21 @@ export function animateLocaleText(root: HTMLElement, locale: Locale, before: Ret
     ], { duration: DURATION, easing: "cubic-bezier(.22, 1, .36, 1)" }));
   }
 
+  // Placeholders are attributes; animate the hints without touching the draft.
+  for (const element of root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input[placeholder], textarea[placeholder]")) {
+    const rect = element.getBoundingClientRect();
+    if (element.value || rect.bottom <= 0 || rect.top >= innerHeight || !rect.width || !rect.height) continue;
+    const text = element.placeholder;
+    placeholders.push({ element, text });
+    restores.push(() => { element.placeholder = text; });
+  }
+
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const nodes: Text[] = [];
   while (walker.nextNode()) {
     const node = walker.currentNode as Text;
     const parent = node.parentElement;
-    if (!/\p{L}/u.test(node.data) || !parent || parent.closest('script, style, [data-locale], [role="dialog"]')) continue;
+    if (!/\p{L}/u.test(node.data) || !parent || parent.closest('script, style, input, textarea, [data-locale], [role="dialog"]')) continue;
     const rect = parent.getBoundingClientRect();
     if (rect.bottom <= 0 || rect.top >= innerHeight || !rect.width || !rect.height || getComputedStyle(parent).visibility === "hidden") continue;
     nodes.push(node);
@@ -114,6 +124,15 @@ export function animateLocaleText(root: HTMLElement, locale: Locale, before: Ret
       for (const { overlay, text, delay } of words) {
         const resolved = Math.max(0, (progress - 0.28 - delay) / (0.72 - delay));
         overlay.textContent = Array.from(text, (character, index) => {
+          if (!/\p{L}/u.test(character) || index / text.length < resolved) return character;
+          const alphabet = ALPHABETS[locale];
+          const glyph = alphabet[Math.floor(Math.random() * alphabet.length)];
+          return character === character.toLowerCase() ? glyph.toLowerCase() : glyph;
+        }).join("");
+      }
+      for (const { element, text } of placeholders) {
+        const resolved = Math.max(0, (progress - 0.28) / 0.72);
+        element.placeholder = Array.from(text, (character, index) => {
           if (!/\p{L}/u.test(character) || index / text.length < resolved) return character;
           const alphabet = ALPHABETS[locale];
           const glyph = alphabet[Math.floor(Math.random() * alphabet.length)];

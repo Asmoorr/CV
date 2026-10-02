@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { content, locales } from "../src/content";
+import { CONTACT_FIELD_LIMITS } from "../src/content/schema";
 
 const categoryOrder = ["contribution", "technology", "practice", "domain"];
 
@@ -62,11 +63,16 @@ describe("resume content", () => {
     }
   });
 
-  it("keeps contact as direct links without form copy", () => {
+  it("keeps localized contact form copy and direct links aligned", () => {
     for (const locale of locales) {
-      expect(Object.keys(content[locale].contact)).not.toContain("form");
+      expect(content[locale].contact.form.nameLabel).toBeTruthy();
+      expect(content[locale].contact.form.emailLabel).toBeTruthy();
+      expect(content[locale].contact.form.messageLabel).toBeTruthy();
+      expect(content[locale].contact.form.submitLabel).toBeTruthy();
       expect(content[locale].contact.title.lead).toBeTruthy();
       expect(content[locale].contact.title.accent).toBeTruthy();
     }
+    expect(Object.keys(content.ru.contact.form)).toEqual(Object.keys(content.en.contact.form));
+    expect(CONTACT_FIELD_LIMITS).toEqual({ name: 120, email: 254, message: 1500 });
   });
 });
