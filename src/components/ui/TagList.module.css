@@ -1,5 +1,5 @@
 .list { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.4rem 0 0; padding: 0; list-style: none; }
-.list li { padding: .28rem .65rem; border: 1px solid var(--rule); border-radius: 999px; color: var(--steel); font-size: .7rem; font-weight: 700; }
+.list li { padding: .28rem .65rem; border: 1px solid var(--rule); border-radius: 999px; color: var(--steel); font-size: var(--text-caption); font-weight: 600; line-height: 1.4; }
 .list .contribution { border-color: rgba(72,199,244,.34); color: var(--paper); background: rgba(72,199,244,.07); }
 .list .technology { color: #c5ccd0; }
 .list .practice { border-style: dashed; }

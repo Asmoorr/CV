@@ -19,16 +19,16 @@
 }
 
 .intro { grid-column: 1 / span 6; align-self: start; }
-.kicker { margin: 0 0 .9rem; color: var(--signal); font-size: .72rem; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; }
-.section h2 { max-width: 900px; margin: 0; font-size: clamp(2.5rem, 6vw, 5.8rem); line-height: .98; letter-spacing: -.065em; text-wrap: balance; text-transform: uppercase; }
-.section h2 span { display: inline-block; color: var(--signal); font-size: .74em; white-space: nowrap; }
-.description { max-width: 48ch; margin: 1.5rem 0 0; color: var(--steel); }
-.links { grid-column: 8 / -1; align-self: start; border-top: 1px solid var(--rule); }
+.kicker { margin: 0 0 .9rem; color: var(--signal); font-size: var(--text-caption); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.section h2 { max-width: 900px; margin: 0; font-size: var(--text-section); line-height: 1.12; letter-spacing: -.035em; text-wrap: balance; text-transform: uppercase; }
+.section h2 span { display: inline-block; color: var(--signal); font-size: .74em; white-space: normal; }
+.description { font-size: var(--text-lead); max-width: 48ch; margin: 1.5rem 0 0; color: var(--steel); }
+.links { grid-column: 7 / -1; align-self: start; border-top: 1px solid var(--rule); }
 .links a, .location { display: grid; grid-template-columns: minmax(0, 1fr) auto 20px; gap: .75rem; align-items: center; min-height: clamp(48px, 6.8vh, 68px); border-bottom: 1px solid var(--rule); text-decoration: none; }
-.links span { color: var(--steel); font-size: .8rem; }
-.links strong { min-width: 0; font-size: clamp(.85rem, 1vw, .95rem); text-align: right; overflow-wrap: anywhere; }
+.links span { color: var(--steel); font-size: var(--text-caption); }
+.links strong { min-width: 0; font-size: 1rem; text-align: right; overflow-wrap: anywhere; }
 .links i { color: var(--signal); font-style: normal; }
-.links > p { margin: .75rem 0 0; color: var(--steel); font-size: .8rem; }
+.links > p { margin: .75rem 0 0; color: var(--steel); font-size: var(--text-caption); }
 
 @media (max-width: 900px) {
   .section.section { height: auto; min-height: auto; padding-block: calc(var(--header-height) + 2rem) 3rem; }
@@ -42,7 +42,7 @@
 
 @media (max-width: 620px) {
   .section.section { padding-block: calc(var(--header-height) + 1.5rem) 3rem; }
-  .section h2 { font-size: clamp(3rem, 17vw, 5.4rem); }
+  .section h2 { font-size: clamp(2.25rem, 10vw, 3.5rem); }
   .description { margin-top: 1.15rem; }
   .links a, .location { grid-template-columns: minmax(0, 1fr) 20px; }
   .links strong { grid-column: 1; text-align: left; }

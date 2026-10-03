@@ -32,10 +32,10 @@
 .hint,
 .loading {
   margin: 0;
-  color: rgba(244, 247, 248, .5);
-  font-size: .66rem;
+  color: var(--steel);
+  font-size: var(--text-caption);
   font-weight: 600;
-  letter-spacing: .16em;
+  letter-spacing: .1em;
   text-align: center;
   text-transform: uppercase;
 }
@@ -55,7 +55,7 @@
   transform: translate(-50%, -50%);
 }
 
-.loading { min-height: 1rem; font-size: .58rem; letter-spacing: .12em; }
+.loading { min-height: 1rem; font-size: var(--text-caption); letter-spacing: .12em; }
 
 .enterButton {
   position: relative;
@@ -96,7 +96,7 @@
 :global(html[data-entry-state="opening"]) .hint { opacity: 0; transition: opacity .3s ease; }
 
 @media (max-width: 620px) {
-  .eyebrow, .hint { max-width: calc(100vw - 40px); font-size: .58rem; }
+  .eyebrow, .hint { max-width: calc(100vw - 40px); font-size: var(--text-caption); }
   .centerpiece { top: 40%; }
 }
 

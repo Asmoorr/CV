@@ -1,12 +1,12 @@
 .layout { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 24px; }
 .heading { grid-column: 1 / span 5; }
 .core { grid-column: 7 / -1; padding-top: .4rem; }
-.core > p { margin: 0 0 1.5rem; color: var(--steel); font-size: .78rem; font-weight: 700; }
+.core > p { margin: 0 0 1.5rem; color: var(--steel); font-size: 1rem; font-weight: 700; }
 .core ul { list-style: none; margin: 0; padding: 0; }
-.core li { padding: .55rem 0; border-bottom: 1px solid var(--rule); font-size: clamp(1.6rem, 3.5vw, 3.25rem); font-weight: 750; letter-spacing: -.055em; }
-.groups { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 5rem; background: var(--rule); border-block: 1px solid var(--rule); }
+.core li { padding: .55rem 0; border-bottom: 1px solid var(--rule); font-size: clamp(1.6rem, 3.5vw, 3.25rem); font-weight: 700; line-height: 1.3; letter-spacing: -.025em; }
+.groups { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: 5rem; background: var(--rule); border-block: 1px solid var(--rule); }
 .groups article { min-height: 220px; padding: 2rem clamp(1.1rem, 2vw, 2rem); background: var(--carbon); }
-.groups h3 { margin: 0 0 1.5rem; color: var(--signal); font-size: .78rem; }
+.groups h3 { margin: 0 0 1.5rem; color: var(--signal); font-size: 1rem; }
 .groups ul { display: flex; flex-wrap: wrap; gap: .6rem; margin: 0; padding: 0; list-style: none; }
 .groups li { color: var(--steel); }
 .groups li:not(:last-child)::after { content: " /"; color: var(--rule); }

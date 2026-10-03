@@ -1,10 +1,14 @@
 :root {
   --carbon: #0d0f10;
   --graphite: #15191b;
-  --steel: #a9b0b4;
+  --steel: #bec6cb;
   --paper: #f4f7f8;
   --signal: #48c7f4;
   --rule: #2a3033;
+  --text-caption: .875rem;
+  --text-body: 1.0625rem;
+  --text-lead: clamp(1.125rem, 1.05rem + .3vw, 1.25rem);
+  --text-section: clamp(2.25rem, 1.25rem + 4vw, 4.5rem);
   --page: min(1240px, calc(100vw - 112px));
   --section-space: clamp(6rem, 10vw, 10rem);
   --header-height: 74px;

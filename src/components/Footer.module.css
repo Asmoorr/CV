@@ -1,11 +1,11 @@
 .footer { border-top: 1px solid var(--rule); }
 .main, .meta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
-.main { min-height: 110px; }
-.identity, .actions { display: flex; align-items: center; gap: 2rem; }
+.main { min-height: 110px; flex-wrap: wrap; padding-block: 1.5rem; }
+.identity, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; }
 .identity > strong { font-size: 1.25rem; }
 .actions { flex: 0 0 auto; }
 .year { color: var(--steel); }
-.meta { min-height: 64px; border-top: 1px solid var(--rule); color: var(--steel); font-size: .72rem; }
+.meta { min-height: 64px; border-top: 1px solid var(--rule); color: var(--steel); font-size: var(--text-caption); }
 .signatureTools { display: flex; align-items: center; gap: 1rem; }
 
 @media (max-width: 620px) {
