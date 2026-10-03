@@ -1,5 +1,5 @@
 .section { background: linear-gradient(180deg, var(--carbon), #101314 44%, var(--carbon)); }
-.timeline { margin-top: 5rem; }
+.timeline { margin-top: var(--section-content-gap); }
 .ruler { display: grid; grid-template-columns: repeat(5, 1fr); margin-left: min(38vw, 360px); padding-bottom: .8rem; color: var(--steel); font-size: var(--text-caption); font-variant-numeric: tabular-nums; }
 .ruler span { border-left: 1px solid var(--rule); padding-left: .55rem; }
 .entries { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
@@ -30,7 +30,7 @@
 }
 
 @media (max-width: 700px) {
-  .timeline { margin-top: 3.5rem; }
+  .timeline { margin-top: var(--section-content-gap); }
   .ruler { display: none; }
   .entries { gap: 0; border-top: 1px solid var(--rule); }
   .entry, .entry:first-child { grid-template-columns: 24px 1fr; grid-template-areas: "plot meta" "plot article"; min-height: 0; margin: 0; border: 0; border-bottom: 1px solid var(--rule); background: transparent; }

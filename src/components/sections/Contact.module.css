@@ -1,9 +1,9 @@
 .section.section {
-  --contact-top-space: clamp(1rem, 2vh, 1.5rem);
+  --contact-top-space: var(--section-space);
   scroll-margin-top: calc(var(--header-height) - var(--header-anchor-offset));
   min-height: calc(100svh - var(--header-height));
   display: flex;
-  padding: var(--contact-top-space) 0 clamp(1rem, 2.8vh, 1.75rem);
+  padding: var(--contact-top-space) 0;
   background: var(--graphite);
 }
 
@@ -11,7 +11,7 @@
   display: grid;
   min-width: 0;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: minmax(290px, 1fr) auto;
+  grid-template-rows: auto auto;
   gap: clamp(24px, 4vh, 40px) 24px;
   width: var(--page);
   max-width: 100%;
@@ -31,7 +31,7 @@
 .links > p { margin: .75rem 0 0; color: var(--steel); font-size: var(--text-caption); }
 
 @media (max-width: 900px) {
-  .section.section { height: auto; min-height: auto; padding-block: calc(var(--header-height) + 2rem) 3rem; }
+  .section.section { padding-block: var(--section-space); }
   .grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; gap: 0; }
   .section h2 span { white-space: normal; }
   .grid > form, .intro, .links { grid-column: 1; }
@@ -41,7 +41,7 @@
 }
 
 @media (max-width: 620px) {
-  .section.section { padding-block: calc(var(--header-height) + 1.5rem) 3rem; }
+  .section.section { padding-block: var(--section-space); }
   .section h2 { font-size: clamp(2.25rem, 10vw, 3.5rem); }
   .description { margin-top: 1.15rem; }
   .links a, .location { grid-template-columns: minmax(0, 1fr) 20px; }

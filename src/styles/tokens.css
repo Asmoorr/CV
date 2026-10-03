@@ -10,7 +10,8 @@
   --text-lead: clamp(1.125rem, 1.05rem + .3vw, 1.25rem);
   --text-section: clamp(2.25rem, 1.25rem + 4vw, 4.5rem);
   --page: min(1240px, calc(100vw - 112px));
-  --section-space: clamp(6rem, 10vw, 10rem);
+  --section-space: clamp(2.5rem, 6svh, 5rem);
+  --section-content-gap: clamp(2rem, 5svh, 4rem);
   --header-height: 74px;
   --header-anchor-offset: 88px;
   --layer-header: 100;
@@ -20,9 +21,9 @@
 }
 
 @media (max-width: 900px) {
-  :root { --page: min(100% - 48px, 760px); --section-space: 6rem; }
+  :root { --page: min(100% - 48px, 760px); --section-space: clamp(2.5rem, 6svh, 4rem); }
 }
 
 @media (max-width: 620px) {
-  :root { --page: calc(100% - 32px); --section-space: 4.5rem; --header-height: 64px; }
+  :root { --page: calc(100% - 32px); --section-space: clamp(2rem, 5svh, 3rem); --header-height: 64px; }
 }
