@@ -61,7 +61,7 @@ describe("portfolio storytelling components", () => {
   it("renders localized footer back-to-top controls without dropping footer details", () => {
     for (const locale of ["ru", "en"] as const) {
       const footer = content[locale].footer;
-      const html = renderToStaticMarkup(<Footer content={footer} />);
+      const html = renderToStaticMarkup(<Footer content={footer} contact={content[locale].contact} navigation={content[locale].navigation} />);
       expect(html).toContain(footer.backToTopLabel);
       expect(html).toContain(`aria-label="${footer.backToTopLabel}"`);
       expect(html).toContain('data-scroll-target="top"');

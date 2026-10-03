@@ -1,6 +1,10 @@
 import type { FooterContent } from "../schema";
 
 export const footer: FooterContent = {
+  specialty: "API, базы данных и серверные системы",
+  contactNote: "По вопросам работы и сотрудничества",
+  navigationLabel: "Разделы сайта",
+
   name: "Артём Трикула",
   role: "Backend Developer",
   location: "Санкт-Петербург",

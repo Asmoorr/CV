@@ -27,7 +27,7 @@ export function ResumeContent() {
           <Skills content={resume.skills} />
           <Contact content={resume.contact} />
         </main>
-        <Footer content={resume.footer} />
+        <Footer content={resume.footer} contact={resume.contact} navigation={resume.navigation} />
       </LocaleTransitionSurface>
   </>;
 }

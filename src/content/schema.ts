@@ -135,6 +135,9 @@ export type ContactContent = {
 export const CONTACT_FIELD_LIMITS = { name: 120, email: 254, message: 1500 } as const;
 
 export type FooterContent = {
+  specialty: string;
+  navigationLabel: string;
+  contactNote: string;
   name: string;
   role: string;
   location: string;

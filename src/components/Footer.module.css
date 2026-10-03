@@ -1,15 +1,55 @@
-.footer { border-top: 1px solid var(--rule); }
-.main, .meta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
-.main { min-height: 110px; flex-wrap: wrap; padding-block: 1.5rem; }
-.identity, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; }
-.identity > strong { font-size: 1.25rem; }
-.actions { flex: 0 0 auto; }
-.year { color: var(--steel); }
-.meta { min-height: 64px; border-top: 1px solid var(--rule); color: var(--steel); font-size: var(--text-caption); }
+.footer {
+  min-height: calc(100svh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--rule);
+  padding-top: clamp(1.5rem, 4svh, 3rem);
+}
+.heading, .main { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); column-gap: 3rem; }
+.heading { align-items: baseline; font-size: var(--text-caption); }
+.heading p { margin: 0; }
+.role { font-weight: 700; }
+.specialty { max-width: 26ch; color: var(--steel); }
+.email { justify-self: end; display: inline-flex; align-items: center; gap: .65rem; text-decoration: none; overflow-wrap: anywhere; }
+.email span { color: var(--signal); }
+.main { flex: 1; align-content: center; align-items: start; padding-block: clamp(3rem, 8svh, 6rem); }
+.profile { font-size: var(--text-caption); }
+.profile p { margin: .75rem 0 0; color: var(--steel); }
+.navigation ul { list-style: none; padding: 0; margin: 0; }
+.navigation a { display: inline-block; padding-block: .1rem; min-height: 44px; font-size: clamp(1.5rem, 2.5vw, 2.5rem); line-height: 1.3; letter-spacing: -.035em; text-decoration: none; }
+.contacts { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
+.contacts a { display: inline-flex; align-items: center; min-height: 44px; gap: .5rem; text-decoration: none; }
+.phone { font-size: clamp(1rem, 1.65vw, 1.5rem); letter-spacing: -.025em; white-space: nowrap; }
+.github { font-size: var(--text-body); }
+.github span { color: var(--signal); }
+.contacts p { max-width: 25ch; margin: .75rem 0 0; color: var(--steel); font-size: var(--text-caption); }
+.email:hover, .email:focus-visible, .navigation a:hover, .navigation a:focus-visible, .contacts a:hover, .contacts a:focus-visible { color: var(--signal); text-decoration: underline; }
+.identity { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-bottom: clamp(2rem, 5svh, 4rem); }
+.name { min-width: 0; font-size: clamp(3rem, 8.8vw, 8rem); font-weight: 800; line-height: 1.05; letter-spacing: -.055em; }
+.identity > button { flex-shrink: 0; }
+.meta { display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; min-height: 76px; padding-block: 1rem; border-top: 1px solid var(--rule); color: var(--steel); font-size: var(--text-caption); }
 .signatureTools { display: flex; align-items: center; gap: 1rem; }
-
+@media (max-width: 900px) {
+  .heading, .main { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 2rem; }
+  .specialty { grid-column: 1; grid-row: 2; }
+  .email { grid-column: 2; grid-row: 1 / 3; align-self: start; }
+  .profile { grid-column: 1 / -1; margin-bottom: 1rem; }
+  .navigation a { font-size: 2rem; }
+  .meta { align-items: flex-start; }
+  .signatureTools { max-width: 50%; }
+}
 @media (max-width: 620px) {
-  .main, .meta, .identity { align-items: flex-start; flex-direction: column; justify-content: center; gap: .65rem; padding-block: 1.5rem; }
-  .signatureTools { align-items: flex-start; flex-direction: column; justify-content: center; gap: .65rem; }
-  .actions { width: 100%; justify-content: space-between; gap: 1rem; }
+  .heading { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
+  .specialty { grid-column: auto; grid-row: auto; max-width: none; }
+  .email { grid-column: auto; grid-row: auto; justify-self: start; min-height: 44px; }
+  .main { gap: 1rem; padding-block: 2rem; }
+  .profile { margin-bottom: .5rem; }
+  .navigation a { font-size: 1.5rem; }
+  .contacts { gap: .25rem; }
+  .phone { font-size: .875rem; }
+  .contacts p { font-size: .8125rem; }
+  .identity { gap: 1rem; }
+  .name { font-size: clamp(2.5rem, 10.5vw, 4rem); }
+  .meta { flex-direction: column; gap: .5rem; }
+  .signatureTools { width: 100%; max-width: none; justify-content: space-between; font-size: .75rem; }
 }
