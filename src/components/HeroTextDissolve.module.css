@@ -6,5 +6,6 @@
 @media (max-width: 620px) { .container { perspective: 720px; } }
 
 @media (prefers-reduced-motion: reduce) {
+  .container { perspective: none; }
   .word, .item { opacity: 1 !important; transform: none !important; will-change: auto; }
 }

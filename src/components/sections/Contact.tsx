@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ContactContent } from "@/content/schema";
 import { ContactForm } from "./ContactForm";
+import { ArrowUpRight } from "../ui/ArrowUpRight";
 import styles from "./Contact.module.css";
 
 export function Contact({ content }: { content: ContactContent }) {
@@ -50,9 +51,9 @@ export function Contact({ content }: { content: ContactContent }) {
           <p className={styles.description}>{content.description}</p>
         </div>
         <div className={styles.links} data-contact-reveal>
-          <a href={`mailto:${content.email}`}><span>{content.emailLabel}</span><strong>{content.email}</strong><i aria-hidden="true">↗</i></a>
-          <a href={phoneHref}><span>{content.phoneLabel}</span><strong>{content.phone}</strong><i aria-hidden="true">↗</i></a>
-          <a href={content.github} target="_blank" rel="noreferrer"><span>{content.githubLabel}</span><strong>{content.github.replace(/^https?:\/\//, "")}</strong><i aria-hidden="true">↗</i></a>
+          <a href={`mailto:${content.email}`}><span>{content.emailLabel}</span><strong>{content.email}</strong><i aria-hidden="true"><ArrowUpRight /></i></a>
+          <a href={phoneHref}><span>{content.phoneLabel}</span><strong>{content.phone}</strong><i aria-hidden="true"><ArrowUpRight /></i></a>
+          <a href={content.github} target="_blank" rel="noreferrer"><span>{content.githubLabel}</span><strong>{content.github.replace(/^https?:\/\//, "")}</strong><i aria-hidden="true"><ArrowUpRight /></i></a>
           <div className={styles.location}><span>{content.locationLabel}</span><strong>{content.location}</strong></div>
           <p>{content.responseTime}</p>
         </div>

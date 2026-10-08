@@ -44,7 +44,7 @@
   .section.section { padding-block: var(--section-space); }
   .section h2 { font-size: clamp(2.25rem, 10vw, 3.5rem); }
   .description { margin-top: 1.15rem; }
-  .links a, .location { grid-template-columns: minmax(0, 1fr) 20px; }
+  .links a, .location { grid-template-columns: minmax(0, 1fr) 20px; row-gap: .25rem; padding-block: 1rem; }
   .links strong { grid-column: 1; text-align: left; }
   .links i { grid-column: 2; grid-row: 1 / 3; }
 }

@@ -65,7 +65,9 @@ describe("portfolio storytelling components", () => {
       expect(html).toContain(footer.backToTopLabel);
       expect(html).toContain(`aria-label="${footer.backToTopLabel}"`);
       expect(html).toContain('data-scroll-target="top"');
-      expect(html).toContain(footer.signature);
+      expect(html).not.toContain(footer.signature);
+      expect(html).not.toContain(footer.status);
+      expect(html).not.toContain("©");
       expect(html).toContain(footer.role);
       expect(html).toContain(footer.location);
     }

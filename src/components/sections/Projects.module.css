@@ -16,4 +16,7 @@
   .project { min-height: 390px; }
 }
 
-@media (max-width: 620px) { .project { min-height: 420px; padding: 1.5rem; } }
+@media (max-width: 620px) {
+  .project { min-height: 420px; padding: 1.5rem; }
+  .link { text-decoration: none; }
+}

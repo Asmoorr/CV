@@ -1,6 +1,7 @@
 import type { ProjectsContent } from "@/content/schema";
 import { SectionHeading } from "../ui/SectionHeading";
 import { TagList } from "../ui/TagList";
+import { ArrowUpRight } from "../ui/ArrowUpRight";
 import styles from "./Projects.module.css";
 
 export function Projects({ content }: { content: ProjectsContent }) {
@@ -21,7 +22,7 @@ export function Projects({ content }: { content: ProjectsContent }) {
               </div>
               <TagList items={item.tags} />
               {item.href && item.linkLabel ? (
-                <a className={styles.link} href={item.href} target="_blank" rel="noreferrer">{item.linkLabel}<span aria-hidden="true">↗</span></a>
+                <a className={styles.link} href={item.href} target="_blank" rel="noreferrer">{item.linkLabel}<span aria-hidden="true"><ArrowUpRight /></span></a>
               ) : null}
             </article>
           ))}

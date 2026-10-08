@@ -58,7 +58,7 @@ function smoothStep(value: number) {
 }
 
 function getProgress(hero: HTMLElement) {
-  const distance = hero.offsetHeight - window.innerHeight;
+  const distance = hero.offsetHeight - (hero.firstElementChild as HTMLElement).offsetHeight;
   if (distance <= 0) return 0;
   return clamp(-hero.getBoundingClientRect().top / distance, 0, 1);
 }
@@ -67,6 +67,7 @@ function useHeroDissolve(text: string, whole = false) {
   const containerRef = useRef<HTMLSpanElement>(null);
   const wordRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const reducedMotionRef = useRef(false);
+  const lastFrameRef = useRef<{ progress: number; mobile: boolean; profiles: Array<WordProfile | null> } | null>(null);
   const tokens = useMemo(() => whole ? [text] : tokenize(text), [text, whole]);
   const profiles = useMemo(
     () => tokens.map((token, index) => token.trim() ? createProfile(text, token, index) : null),
@@ -75,6 +76,12 @@ function useHeroDissolve(text: string, whole = false) {
 
   const applyProgress = useCallback((progress: number) => {
     const words = wordRefs.current;
+    const mobile = window.innerWidth <= 620;
+    const last = lastFrameRef.current;
+    // Once the hero is outside its animation range, avoid rewriting every word
+    // on every scroll event throughout the rest of the page.
+    if (last?.progress === progress && last.mobile === mobile && last.profiles === profiles) return;
+    lastFrameRef.current = { progress, mobile, profiles };
 
     for (let index = 0; index < words.length; index += 1) {
       const word = words[index];
@@ -85,7 +92,6 @@ function useHeroDissolve(text: string, whole = false) {
       const easedProgress = smoothStep(localProgress);
       const opacity = 1 - easedProgress;
       word.style.opacity = `${opacity}`;
-      const mobile = window.innerWidth <= 620;
       const depth = profile.z * (mobile ? 0.7 : 1);
       word.style.transform = easedProgress === 0
         ? "none"
@@ -137,10 +143,12 @@ function useHeroDissolve(text: string, whole = false) {
   }, [applyCurrentProgress]);
 
   const setItemRef = useCallback((element: HTMLElement | null) => {
+    lastFrameRef.current = null;
     containerRef.current = element;
     wordRefs.current[0] = element;
   }, []);
   const setWordRef = useCallback((index: number, element: HTMLSpanElement | null) => {
+    lastFrameRef.current = null;
     wordRefs.current[index] = element;
   }, []);
   return { containerRef, setItemRef, setWordRef, tokens };

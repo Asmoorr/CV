@@ -21,20 +21,25 @@
 .tech { position: absolute; z-index: 2; left: 0; top: 50%; margin: 0; padding: 0; list-style: none; transform: translate(-39%, -50%) rotate(-90deg); display: flex; gap: 2rem; color: rgba(169,176,180,.44); font-size: .65rem; font-weight: 700; letter-spacing: .12em; }
 .orbit { position: absolute; z-index: 1; border: 1px solid rgba(72,199,244,.22); border-radius: 50%; }
 .orbitOne { width: 32px; height: 32px; left: 16%; top: 23%; }
-.orbitTwo { width: 15px; height: 15px; right: 17%; bottom: 25%; background: var(--signal); box-shadow: 0 0 24px rgba(72,199,244,.48); }
+.orbitTwo { width: 15px; height: 15px; right: 8%; top: calc(100% + 24px); pointer-events: none; background: var(--signal); box-shadow: 0 0 24px rgba(72,199,244,.48); }
 
 @keyframes hero-in { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
 @media (max-width: 900px) { .tech { display: none; } }
 
 @media (max-width: 620px) {
-  .hero { min-height: 180svh; }
   .stage { padding-inline: 16px; }
   .hero h1 { max-width: 100%; font-size: clamp(2.75rem, 14vw, 5rem); overflow-wrap: normal; }
   .summary { max-width: 31ch; }
   .actions { flex-direction: column; align-items: stretch; max-width: 300px; margin-inline: auto; }
   .meta { inset-inline: 16px; }
   .meta > span:last-child { display: none; }
+}
+
+/* A stable full-height stage covers the viewport even with browser chrome hidden. */
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  .hero { min-height: calc(100lvh + 80svh); overflow-x: visible; }
+  .stage { min-height: 100lvh; }
 }
 
 @media (prefers-reduced-motion: reduce) {

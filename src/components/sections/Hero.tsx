@@ -11,7 +11,6 @@ export function Hero({ content }: { content: HeroContent }) {
         <div className={styles.visualLayer} aria-hidden="true">
           <HeroField />
           <HeroDissolveItem as="div" motionId="orbit-outline" className={`${styles.orbit} ${styles.orbitOne}`} />
-          <HeroDissolveItem as="div" motionId="orbit-filled" className={`${styles.orbit} ${styles.orbitTwo}`} />
         </div>
         <div className={styles.content}>
           <HeroTextDissolve as="p" className={styles.greeting} text={content.greeting} />
@@ -22,9 +21,10 @@ export function Hero({ content }: { content: HeroContent }) {
             <HeroDissolveItem as="a" motionId="experience" className={`${styles.button} ${styles.primary}`} href="#experience">{content.primaryAction}</HeroDissolveItem>
             <HeroDissolveItem as="a" motionId="contact" className={`${styles.button} ${styles.secondary}`} href="#contact">{content.secondaryAction}</HeroDissolveItem>
           </div>
+          <HeroDissolveItem as="div" motionId="orbit-filled" className={`${styles.orbit} ${styles.orbitTwo}`} aria-hidden="true" />
         </div>
         <div className={styles.meta}>
-          <HeroDissolveItem motionId="status" className={statusStyles.status}><i />{content.status}</HeroDissolveItem>
+          <HeroDissolveItem motionId="status" className={statusStyles.status}>{content.status}</HeroDissolveItem>
           <HeroDissolveItem motionId="location">{content.location}</HeroDissolveItem>
         </div>
         <ul className={styles.tech} aria-hidden="true">

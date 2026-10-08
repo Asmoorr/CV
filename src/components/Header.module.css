@@ -13,6 +13,7 @@
 .menuButton { display: none; border: 0; background: transparent; color: var(--paper); transition: color var(--motion-fast), transform var(--motion-fast); }
 
 @media (hover: hover) and (pointer: fine) {
+  .panel nav a::after { height: 2px; }
   .brand:hover, .menuButton:hover { color: var(--signal); transform: translateY(-2px); }
   .localeSwitch button:hover { background: rgba(72,199,244,.12); color: var(--paper); transform: translateY(-1px); }
   .localeSwitch button[aria-pressed="true"]:hover { color: var(--carbon); }

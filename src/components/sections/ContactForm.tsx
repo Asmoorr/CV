@@ -2,6 +2,7 @@
 
 import { useId, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { CONTACT_FIELD_LIMITS, type ContactContent } from "@/content/schema";
+import { ArrowUpRight } from "../ui/ArrowUpRight";
 import styles from "./ContactForm.module.css";
 
 type Field = "name" | "email" | "message";
@@ -170,7 +171,7 @@ export function ContactForm({ content }: { content: ContactContent["form"] }) {
         <p className={styles.status} role="status" aria-live="polite">{status ? statusCopy[status] : ""}</p>
         <button type="submit" disabled={isSending}>
           <span>{isSending ? content.sendingLabel : content.submitLabel}</span>
-          <i aria-hidden="true">↗</i>
+          <i aria-hidden="true"><ArrowUpRight /></i>
         </button>
       </div>
     </form>

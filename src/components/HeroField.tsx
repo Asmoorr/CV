@@ -78,7 +78,7 @@ export function HeroField() {
 
     const updateProgress = () => {
       const state = document.documentElement.dataset.entryState;
-      const distance = hero.offsetHeight - window.innerHeight;
+      const distance = hero.offsetHeight - (hero.firstElementChild as HTMLElement).offsetHeight;
       const progress = reduced || state === "required" || state === "opening" || distance <= 0
         ? 0
         : Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / distance));
@@ -92,6 +92,9 @@ export function HeroField() {
 
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      // Toolbar-only resizes on iOS must not reset the particle field.
+      if (width === canvas.clientWidth && height === canvas.clientHeight
+        && canvas.width === Math.floor(width * ratio) && canvas.height === Math.floor(height * ratio)) return;
       width = canvas.clientWidth;
       height = canvas.clientHeight;
       canvas.width = width * ratio;
